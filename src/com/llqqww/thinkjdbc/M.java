@@ -405,7 +405,7 @@ public class M {
 	}
 
 	private void initSql() {
-		table = table == null ? "" : table;
+		table = table == null ? "" : D.getTablePrefix()+table;
 		join = join == null ? "" : join;
 		field = field == null ? "" : field;
 		where = where == null ? "" : where;
