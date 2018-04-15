@@ -125,8 +125,8 @@ System.out.println("avg:"+avg);
 num= (long) D.M("machine_event").where("id>13441").sum("type");
 System.out.println("sum:"+num);
 ```
-> 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句。
-> by calling the method of `fetchSql(true)`,you can get the SQL statement  `ThinkJD` produced.
+> 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
+> by calling the method of `fetchSql(true)`,you can get the SQL statement  `ThinkJD` produced(exception way) and there will be no operation for the database.
 
 ## 0x04 插入数据(insert method)
 | 操作(Operation)| 参数(Param)| 说明(Note) | 
@@ -189,4 +189,4 @@ D.M().execute( sql1 [ sql2 , sql3 ... ] );
 
 ##0x0A 关于(About)
 如果喜欢的话，请点个赞让我知道哦~在找到比它用得更顺手的JDBC库之前，这个项目会持续更新。
-if you like this project,start to let me know :) .Before finding a more convenient JDBC lib,I'll update it continuously.
+if you like this project,star it to let me know :) .Before finding a more convenient JDBC lib,I'll update it continuously.
