@@ -187,6 +187,6 @@ D.M().execute( sql1 [ sql2 , sql3 ... ] );
 
 [Apache License 2.0](https://github.com/Leytton/ThinkJD/blob/master/LICENSE)
 
-##0x0A 关于(About)
+## 0x0A 关于(About)
 如果喜欢的话，请点个赞让我知道哦~在找到比它用得更顺手的JDBC库之前，这个项目会持续更新。
 if you like this project,star it to let me know :) .Before finding a more convenient JDBC lib,I'll update it continuously.
