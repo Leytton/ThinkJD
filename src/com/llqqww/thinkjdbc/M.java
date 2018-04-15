@@ -88,16 +88,16 @@ public class M {
 		return this;
 	}
 
-	public M page(int page, int rows) {
+	public M page(long page, long rows) {
 		return limit(page - 1, rows);
 	}
 
-	public M limit(int rows) {
+	public M limit(long rows) {
 		limit(0, rows);
 		return this;
 	}
 
-	public M limit(int offset, int rows) {
+	public M limit(long offset, long rows) {
 		offset = offset >= 0 ? offset : 0;
 		this.limit = "limit " + offset + "," + rows;
 		return this;
@@ -346,7 +346,6 @@ public class M {
 		if ("" != this.field) {
 			this.field = "(" + this.field + ")";
 		}
-		;
 		if (null == param_data || param_data.length < 1) {
 			throw new SQLException("Undefined data to insert");
 		}
