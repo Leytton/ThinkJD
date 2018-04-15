@@ -10,7 +10,7 @@
 
 **`警告!!! 忙里偷闲一天时间搞出来的东西，来不及做全面测试，后面补上，欢迎大家提issue`**
 
-**`Warning!!! This is just a one-day work as well as this document what you read.Too busy to do much test,more function expected to be found and welcome to have a overall test for it :)`**
+**`Warning!!! This is just a one-day work as well as this document what you read.Too busy to do much`** **`test,more functions are expected to be found and welcome to have a overall test for it :)`**
 
 # 2、使用方法(Get Started)
 
@@ -148,10 +148,6 @@ id=D.M("user").field("",null,"Tom",60).add();
 | -------- | -------- | -------- 
 |save|long save()|前提方法:field(),where() must be called;<br>返回执行生效行数(return the affected number of rows)
 
-`注：为防止误删除，where条件不能为空。`
-
-`To avoid careless deletion, [where] conditions mustn't be null`
-
 ```
 long num=D.M("user").field("name,weight","Mike",100).where("id=?",1234).save();
 num=D.M("machine_event").field("weight",100).where("id>?",1234).save();
@@ -162,6 +158,10 @@ num=D.M("machine_event").field("weight",100).where("id>?",1234).save();
 | 操作(Operation)| 参数(Param)|说明(Note) | 
 | -------- | -------- | -------- 
 |save|long save()|前提方法:field();<br>返回执行生效行数(return the affected number of rows)
+
+`注：为防止误删除，where条件不能为空。`
+
+`To avoid careless deletion, [where] conditions mustn't be null`
 ```
 long num=D.M("machine_event").delete(13424);
 num=D.M("machine_event").delete("time",1523681398);
@@ -186,3 +186,7 @@ D.M().execute( sql1 [ sql2 , sql3 ... ] );
 ## 0x09 许可证(License)
 
 [Apache License 2.0](https://github.com/Leytton/ThinkJD/blob/master/LICENSE)
+
+##0x0A 关于(About)
+如果喜欢的话，请点个赞让我知道哦~在找到比它用得更顺手的JDBC库之前，这个项目会持续更新。
+if you like this project,start to let me know :) .Before finding a more convenient JDBC lib,I'll update it continuously.
