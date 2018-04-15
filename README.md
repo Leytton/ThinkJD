@@ -4,7 +4,7 @@
 
 `ThinkJD`, also known as `ThinkJDBC`, an easy and powerful open source JDBC library. You can operate the database with JAVA just like the M method of `ThinkPHP` framework.
 
-**项目主页(Home Page)** https://github.com/Leytton/ThinkJD
+**项目主页(Home Page)** https://github.com/Leytton/ThinkJD https://gitee.com/Leytton/ThinkJD
 
 **博客主页(Blog Page)** https://blog.csdn.net/Leytton
 
