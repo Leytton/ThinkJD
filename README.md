@@ -10,7 +10,7 @@
 
 **`警告!!! 忙里偷闲一天时间搞出来的东西，来不及做全面测试，后面补上，欢迎大家提issue`**
 
-**`Warning!!! This is just a one-day work as well as this document what you read.Too busy to do much`** **`test,more functions are expected to be found and welcome to have a overall test for it :)`**
+**`Warning!!! This is just a one-day work as well as this document what you read.Too busy to do many`** **`tests,more functions are expected to be found and welcome to have a overall test for it :)`**
 
 # 2、使用方法(Get Started)
 
@@ -37,6 +37,12 @@ D.setDataSource(dataSource);
 `注：如果定义了数据库连接池，ThinkJD会优先使用。`
 
 `Note that if you defined the JDBC pool,it will be preferred to use.`
+
+### (3)配置表前缀
+
+```
+D.setTablePrefix("jd_");
+```
 
 ## 0x02 过滤方法(Filter Method)
 | 操作(Operation)| 参数(Param)| 示例(Eg.) |说明(Note) | 
@@ -189,4 +195,5 @@ D.M().execute( sql1 [ sql2 , sql3 ... ] );
 
 ## 0x0A 关于(About)
 如果喜欢的话，请点个赞让我知道哦~在找到比它用得更顺手的JDBC库之前，这个项目会持续更新。
+
 if you like this project,star it to let me know :) .Before finding a more convenient JDBC lib,I'll update it continuously.
