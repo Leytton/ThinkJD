@@ -47,7 +47,7 @@ D.setTablePrefix("jd_");
 ## 0x02 过滤方法(Filter Method)
 | 操作(Operation)| 参数(Param)| 示例(Eg.) |说明(Note) | 
 | ------------- |------------- |------------- | -------------
-|`table`|table(String table) | table("machine_event") | 
+|`table`|table(String table) | table("user") | 
 |`join` |join(String join)| join("left join machine on user.id=user_id and machine_status=1")|
 |`field`|①field(String filed)<br>②field(String filed, Object... dataParam)| ①field("id,username")<br>②field("id,username",1111,"Leytton")| ①用于查询操作(for select sql)<br>②用于更新操作(for update sql)
 |`where`|①where(String where)<br>②where(String where, Object... whereParam)|①where("id=1111 and username='Leytton'")<br>②where("id=? and username=?",1111,"Leytton")
@@ -112,23 +112,23 @@ List<User> res =D.M("user").field("id,name").where("id=?",1068).select(User.clas
 |sum|double sum(String field)
 
 ```
-long num= new M("machine_event").where("id>13441").count();
+long num= new M("user").where("id>13441").count();
 System.out.println("count:"+num);
-num= D.M("machine_event").fetchSql(true).where("id>13441").count("type");
+num= D.M("user").fetchSql(true).where("id>13441").count("type");
 System.out.println("count:"+num);
-num= (long) D.M("machine_event").fetchSql(false).where("id<0").max("id");
+num= (long) D.M("user").fetchSql(false).where("id<0").max("id");
 System.out.println("max:"+num);
-num= (long) D.M("machine_event").where("id<13441").max("id");
+num= (long) D.M("user").where("id<13441").max("id");
 System.out.println("max:"+num);
-num= (long) D.M("machine_event").min("id");
+num= (long) D.M("user").min("id");
 System.out.println("min:"+num);
-num= (long) D.M("machine_event").where("id>13441").min("id");
+num= (long) D.M("user").where("id>13441").min("id");
 System.out.println("min:"+num);
-num= (long) D.M("machine_event").fetchSql(false).where("id>13442").avg("id");
+num= (long) D.M("user").fetchSql(false).where("id>13442").avg("id");
 System.out.println("avg:"+num);
-double avg= D.M("machine_event").fetchSql(false).where("id>13442").avg("id");
+double avg= D.M("user").fetchSql(false).where("id>13442").avg("id");
 System.out.println("avg:"+avg);
-num= (long) D.M("machine_event").where("id>13441").sum("type");
+num= (long) D.M("user").where("id>13441").sum("type");
 System.out.println("sum:"+num);
 ```
 > 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
@@ -156,7 +156,7 @@ id=D.M("user").field("",null,"Tom",60).add();
 
 ```
 long num=D.M("user").field("name,weight","Mike",100).where("id=?",1234).save();
-num=D.M("machine_event").field("weight",100).where("id>?",1234).save();
+num=D.M("user").field("weight",100).where("id>?",1234).save();
 
 ```
 
@@ -169,9 +169,9 @@ num=D.M("machine_event").field("weight",100).where("id>?",1234).save();
 
 `To avoid careless deletion, [where] conditions mustn't be null`
 ```
-long num=D.M("machine_event").delete(13424);
-num=D.M("machine_event").delete("time",1523681398);
-num=D.M("machine_event").where("id>=?",13421).delete();
+long num=D.M("user").delete(13424);
+num=D.M("user").delete("time",1523681398);
+num=D.M("user").where("id>=?",13421).delete();
 ```
 
 ## 0x07 执行SQL(execute method)
