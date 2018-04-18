@@ -10,7 +10,7 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="ThinkJDBC V1.0.2 By Leytton(http://www.llqqww.com) 2018/04/14. Apache 2.0 Licence";
+	private static String version="ThinkJDBC V1.1.2 By Leytton(http://www.llqqww.com) 2018/04/14. Apache 2.0 Licence";
 	private static String TablePrefix="";
 	
 	public static M M() throws SQLException {
@@ -29,7 +29,7 @@ public class D {
 			if(null!=dbConfig) {
 				conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getDbUser(), dbConfig.getDbPassword());
 			}else {
-				throw new SQLException("DbConfig haven't set , D.setDbConfig() should be call first !");
+				throw new SQLException("DbConfig/DataSource haven't set , D.setDbConfig()/D.setDataSource() should be called first !");
 			}
 		}
 		return conn;
