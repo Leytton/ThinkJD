@@ -124,6 +124,7 @@ user表结构(user table fields)：
 |weight | float | 体重
 |sex|tinyint|性别 0女/1男(0:women/1:man)
 |time|int|时间
+
 `select()`和 `find()`查询结果封装到JavaBean里返回：
 The return value of `select()` and `find()` will be saved to a JavaBean such as:
 ```
