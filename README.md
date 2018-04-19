@@ -1,4 +1,4 @@
-# 1、简介(Project)
+# 1 简介(Project)
 
 `ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样来操作数据库。
 
@@ -8,13 +8,29 @@
 
 **博客主页(Blog Page)** https://blog.csdn.net/Leytton
 
-**`警告!!! 忙里偷闲一天时间搞出来的东西，来不及做全面测试，后面补上，欢迎大家提issue`**
+~~`警告!!! 忙里偷闲一天时间搞出来的东西，来不及做全面测试，后面补上，欢迎大家提issue`~~
+`逐步测试中，案例都是经过测试的无毒无公害请放心食用:)` 
 
-**`Warning!!! This is just a one-day work as well as this document what you read.Too busy to do many`** **`tests,more functions are expected to be found and welcome to have a overall test for it :)`**
+测试项目(Test Demo) https://github.com/Leytton/ThinkJD_Demo
 
-# 2、使用方法(Get Started)
+~~`Warning!!! This is just a one-day work as well as this document what you read.Too busy to do many`~~ 
+~~`tests,more functions are expected to be found and welcome to have a overall test for it :)`~~
 
-## 0x01 定义数据库(Config the Database)
+# 2 使用方法(Get Started)
+
+## 0x01 添加依赖(Add the Dependencies)
+将[ThinkJDBC-x.x.x.jar](https://github.com/Leytton/ThinkJD/releases)和下面的两个依赖库添加到项目编译路径里。
+
+Add ThinkJDBC-x.x.x.jar and the  following dependencies to the build path.
+
+ - mysql-connector-java-5.1.39.jar
+ - commons-dbutils-1.6.jar
+
+ 这两个Jar包在下面目录里(you can find them in the lib dir)：
+ 
+ https://github.com/Leytton/ThinkJD/tree/master/lib
+ 
+## 0x02 定义数据库(Config the Database)
 ThinkJD支持直接定义用户名密码访问数据库，也支持使用Hikari、C3P0等数据库连接池。
 
 There are two ways to connect database by using ThinkJD.You can config username and password or using the JDBC DataSources/Resource Pools  such as Hikari,C3P0,etc.
@@ -44,7 +60,7 @@ D.setDataSource(dataSource);
 D.setTablePrefix("jd_");
 ```
 
-## 0x02 过滤方法(Filter Method)
+## 0x03 过滤方法(Filter Method)
 | 操作(Operation)| 参数(Param)| 示例(Eg.) |说明(Note) | 
 | ------------- |------------- |------------- | -------------
 |`table`|table(String table) | table("user") | 
@@ -58,21 +74,80 @@ D.setTablePrefix("jd_");
 |`limit`|①limit(long rows)<br>②limit(long offset, long rows)|①limit(10)<br>②limit(1,10)
 |`union`|union(String union,Boolean isAll)|①union("select from user_two where id>1234",false)<br>②union("select from user_two where id>1234",true)
 
-## 0x03 查询数据(select method)
-`select()`和 `find()`查询结果封装到JavaBean里返回，示例：
+## 0x04 查询数据(select method)
 
-The return value of `select()` and `find()` will be saved to a JavaBean such as:
+| 操作(Operation)| 参数(Param)| 说明(Note) 
+| -------- |--------|--------
+|select|<`T`> List<`T`> select(Class<`T`> type)
+|find|①<`T`> T find(Class<`T`> type)<br>②<`T`> T find(Class<`T`> type, long id)<br>③<`T`> T find(Class<`T`> type, String key, Object value)
+|count|①long count()<br>②long count(String field)
+|max|double max(String field)
+|min|double min(String field)
+|avg|double avg(String field)
+|sum|double sum(String field)
 
 ```
+//select id,name,weight from jd_user where id>3
+List<User> res = new M("user").field("id,name,weight").where("id>3").select(User.class);
+
+//select sex,sum(weight) as weight,avg(age) as age,count(id) as num from jd_user where id>5 group by sex order by sex desc limit 0,10
+res = new M("user").field("sex,sum(weight) as weight,avg(age) as age,count(id) as num").where("id>?",5).group("sex").order("sex desc").page(1, 10).select(User.class);
+
+long num= new M("user").where("id>3").count();
+System.out.println("count:"+num);
+num= D.M("user").fetchSql(true).where("id>3").count("id");
+System.out.println("count:"+num);
+num= (long) D.M("user").fetchSql(false).where("id<0").max("id");
+System.out.println("max:"+num);
+num= (long) D.M("user").where("id<3").max("id");
+System.out.println("max:"+num);
+num= (long) D.M("user").min("id");
+System.out.println("min:"+num);
+num= (long) D.M("user").where("id>3").min("id");
+System.out.println("min:"+num);
+num= (long) D.M("user").fetchSql(false).where("id>3").avg("id");
+System.out.println("avg:"+num);
+double avg= D.M("user").fetchSql(false).where("id>3").avg("id");
+System.out.println("avg:"+avg);
+num= (long) D.M("user").where("id>13441").sum("age");
+System.out.println("sum:"+num);
+```
+
+user表结构(user table fields)：
+
+|字段名(Field Name) | 数据类型(Data Type) | 备注
+|--------|--------|--------
+|id |int | 用户id,自增长主键(primary key auto_increment)
+|name | varchar | 用户名
+|age |tinyint|年龄
+|weight | float | 体重
+|sex|tinyint|性别 0女/1男(0:women/1:man)
+|time|int|时间
+`select()`和 `find()`查询结果封装到JavaBean里返回：
+The return value of `select()` and `find()` will be saved to a JavaBean such as:
+```
+
 public class User {
+	
 	private long id;
+	private int age;
 	private String name;
 	private float weight;
+	private int sex;
+	private int num;
+	private long time;
+	
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
 	}
 	public String getName() {
 		return name;
@@ -85,56 +160,35 @@ public class User {
 	}
 	public void setWeight(float weight) {
 		this.weight = weight;
-	} 
+	}
+	public int getSex() {
+		return sex;
+	}
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
+	public long getTime() {
+		return time;
+	}
+	public void setTime(long time) {
+		this.time = time;
+	}
+	
 }
-```
-
-user表结构(user table fields)：
-
-|字段名(Field Name) | 数据类型(Data Type) | 备注
-|--------|--------|--------
-|id |int | 用户id,自增长主键(primary key auto_increment)
-|name | varchar | 用户名
-|weight | float | 体重
-
-Eg.
-```
-List<User> res =D.M("user").field("id,name").where("id=?",1068).select(User.class);
-```
-| 操作(Operation)| 参数(Param)| 说明(Note) 
-| -------- |--------|--------
-|select|<`T`> List<`T`> select(Class<`T`> type)
-|find|①<`T`> T find(Class<`T`> type)<br>②<`T`> T find(Class<`T`> type, long id)<br>③<`T`> T find(Class<`T`> type, String key, Object value)
-|count|①long count()<br>②long count(String field)
-|max|double max(String field)
-|min|double min(String field)
-|avg|double avg(String field)
-|sum|double sum(String field)
 
 ```
-long num= new M("user").where("id>13441").count();
-System.out.println("count:"+num);
-num= D.M("user").fetchSql(true).where("id>13441").count("type");
-System.out.println("count:"+num);
-num= (long) D.M("user").fetchSql(false).where("id<0").max("id");
-System.out.println("max:"+num);
-num= (long) D.M("user").where("id<13441").max("id");
-System.out.println("max:"+num);
-num= (long) D.M("user").min("id");
-System.out.println("min:"+num);
-num= (long) D.M("user").where("id>13441").min("id");
-System.out.println("min:"+num);
-num= (long) D.M("user").fetchSql(false).where("id>13442").avg("id");
-System.out.println("avg:"+num);
-double avg= D.M("user").fetchSql(false).where("id>13442").avg("id");
-System.out.println("avg:"+avg);
-num= (long) D.M("user").where("id>13441").sum("type");
-System.out.println("sum:"+num);
-```
+
+
 > 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
 > by calling the method of `fetchSql(true)`,you can get the SQL statement  `ThinkJD` produced(exception way) and there will be no operation for the database.
 
-## 0x04 插入数据(insert method)
+## 0x05 插入数据(insert method)
 | 操作(Operation)| 参数(Param)| 说明(Note) | 
 | -------- | -------- | --------
 |add|long add()|前提方法:field() must be called;<br>返回自动生成的主键值(return the id which is a auto_increment primary key);
@@ -149,7 +203,7 @@ long id=D.M("user").field("name,weight","Tom",60).add();
 id=D.M("user").field("",null,"Tom",60).add();
 ```
 
-## 0x05 更新数据(update method)
+## 0x06 更新数据(update method)
 | 操作(Operation)| 参数(Param)|说明(Note)
 | -------- | -------- | -------- 
 |save|long save()|前提方法:field(),where() must be called;<br>返回执行生效行数(return the affected number of rows)
@@ -160,10 +214,10 @@ num=D.M("user").field("weight",100).where("id>?",1234).save();
 
 ```
 
-## 0x06 删除数据(delete method)
+## 0x07 删除数据(delete method)
 | 操作(Operation)| 参数(Param)|说明(Note) | 
 | -------- | -------- | -------- 
-|save|long save()|前提方法:field();<br>返回执行生效行数(return the affected number of rows)
+|delete|long delete()|前提方法:field() must be called;;<br>返回执行生效行数(return the affected number of rows)
 
 `注：为防止误删除，where条件不能为空。`
 
@@ -174,7 +228,7 @@ num=D.M("user").delete("time",1523681398);
 num=D.M("user").where("id>=?",13421).delete();
 ```
 
-## 0x07 执行SQL(execute method)
+## 0x08 执行SQL(execute method)
 
 | 操作(Operation)| 参数(Param)|说明(Note) | 
 | -------- | -------- | -------- 
@@ -184,16 +238,11 @@ num=D.M("user").where("id>=?",13421).delete();
 D.M().execute( sql1 [ sql2 , sql3 ... ] );
 ```
 
-## 0x08 依赖(Dependencies)
-
- - mysql-connector-java-5.1.39.jar
- - commons-dbutils-1.6.jar
-
-## 0x09 许可证(License)
+# 3 许可证(License)
 
 [Apache License 2.0](https://github.com/Leytton/ThinkJD/blob/master/LICENSE)
 
-## 0x0A 关于(About)
+# 4 关于(About)
 如果喜欢的话，请点个赞让我知道哦~在找到比它用得更顺手的JDBC库之前，这个项目会持续更新。
 
 if you like this project,star it to let me know :) .Before finding a more convenient JDBC lib,I'll update it continuously.
