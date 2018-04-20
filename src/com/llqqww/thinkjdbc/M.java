@@ -18,6 +18,7 @@ public class M {
 
 	private String sql;
 	private String table;
+	private String prefix;
 	private String join;
 	private String field;
 	private String where;
@@ -43,6 +44,11 @@ public class M {
 
 	public M table(String table) {
 		this.table = table;
+		return this;
+	}
+
+	public M prefix(String prefix) {
+		this.prefix = prefix;
 		return this;
 	}
 
@@ -103,11 +109,14 @@ public class M {
 		return this;
 	}
 
-	public M union(String union,Boolean isAll) {
-		if(isAll) {
-			this.union = "union all (" + union + ")";
-		}else {
-			this.union = "union (" + union + ")";
+	public M union(String union, Boolean isAll) {
+		if(null==this.union) {
+			this.union="";
+		}
+		if (isAll) {
+			this.union += (" union all (" + union + ")");
+		} else {
+			this.union += (" union (" + union + ")");
 		}
 		return this;
 	}
@@ -280,15 +289,15 @@ public class M {
 		}
 		this.close();
 	}
-	
+
 	public String getField(String field) throws SQLException {
 		this.field(field);
 		if (buildSql_Select()) {
 			Object res = new QueryRunner().query(conn, sql, new ScalarHandler<Object>(), param_where);
 			this.close();
-			if(null==res) {
+			if (null == res) {
 				return null;
-			}else {
+			} else {
 				return res.toString();
 			}
 		} else {
@@ -302,7 +311,7 @@ public class M {
 			double tj_num = Double.valueOf(res);
 			return tj_num;
 		} else {
-			throw new SQLException("NULL return value of '"+field+"',check your 'where' sql");
+			throw new SQLException("NULL return value of '" + field + "',check your 'where' sql");
 		}
 	}
 
@@ -388,10 +397,9 @@ public class M {
 		sql = sql.replaceAll(" +", " ").trim();
 		if (fetchSql) {
 			this.close();
-			String msg=	"¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T\r\n"
-					+	"¨USQL debuging and you'll get a invalid return value !!!\r\n"
-					+	"¨U"+sql+"\r\n"
-					+	"¨UBy ThinkJDBC "+D.getVersion()+"\r\n"
+			String msg ="¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T\r\n"
+					+	"¨USQL debuging and you'll get a invalid return value !!!\r\n" + "¨U" + sql + "\r\n"
+					+	"¨UBy ThinkJDBC " + D.getVersion() + "\r\n"
 					+	"¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T";
 			try {
 				throw new Exception("\r\n" + msg);
@@ -404,13 +412,13 @@ public class M {
 			return true;
 		}
 	}
-	
+
 	private void initDB() throws SQLException {
 		this.conn = D.getConnection();
 	}
 
 	private void initSql() {
-		table = table == null ? "" : D.getTablePrefix()+table;
+		table = table == null ? "" : (prefix == null ? D.getTablePrefix() : prefix) + table;
 		join = join == null ? "" : join;
 		field = field == null ? "" : field;
 		where = where == null ? "" : where;
