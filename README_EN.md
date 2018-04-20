@@ -1,6 +1,8 @@
-[**中文文档**](https://blog.csdn.net/Leytton/article/details/80021702)
+[中文文档](https://blog.csdn.net/Leytton/article/details/80021702)
 
-[**English Document**](https://blog.csdn.net/Leytton/article/details/80021029)
+[English Document](https://blog.csdn.net/Leytton/article/details/80021029)
+
+Latest Version V1.2.3
 
 # 1 Project
 
@@ -65,6 +67,7 @@ You can config the prefix of table(Not necessary).
 D.setTablePrefix("jd_");
 //D.M('user') will operate the `jd_user` table
 ```
+> Note: `D.M('user').prefix('jd_')`to set the table prefix temporarily【V1.2.3 added】
 
 ## 0x03 Filter Method
 | Operation| Param| Eg. |Note| 
@@ -78,7 +81,7 @@ D.setTablePrefix("jd_");
 |`order`|order(String order)|order("id desc")
 |`page`|page(long page, long rows)|page(1,10)
 |`limit`|①limit(long rows)<br>②limit(long offset, long rows)|①limit(10)<br>②limit(1,10)
-|`union`|union(String union,Boolean isAll)|①union("select from user_two where id>1234",false)<br>②union("select from user_two where id>1234",true)
+|`union`|union(String union,Boolean isAll)|①union("select * from user_two where id>1234",false)<br>②union("select * from user_two where id>1234",true)
 
 ## 0x04 Select Method
 
@@ -93,34 +96,49 @@ D.setTablePrefix("jd_");
 |sum|double sum(String field)
 
 ```
+//find
+//select id,name from jd_user where id>4 order by id asc limit 0,1
+User res = D.M("user").field("id,name").where("id>?",4).order("id asc").find(User.class);
+
+//find by id
 //select * from user where id=3 limit 0,1
 User user = D.M("user").find(User.class,3);
 
+//find by field
+//select * from jd_user where name='Tom' limit 0,1
+User user=D.M("user").fetchSql(true).find(User.class,"name","Bob");
+
+//query with where,field,etc.
 //select id,name,weight from jd_user where id>3
 List<User> res = new M("user").field("id,name,weight").where("id>3").select(User.class);
 
+//query with group
 //select sex,sum(weight) as weight,avg(age) as age,count(id) as num from jd_user where id>5 group by sex order by sex desc limit 0,10
 res = new M("user").field("sex,sum(weight) as weight,avg(age) as age,count(id) as num").where("id>?",5).group("sex").order("sex desc").page(1, 10).select(User.class);
 
+//query with join
+//select jd_user.id,name,weight,sum(gold) as num from jd_user left join jd_gold on user_id=jd_user.id where jd_user.id>3 group by jd_user.id
+res = new M("user").field("jd_user.id,name,weight,sum(gold) as num").join("left join jd_gold on user_id=jd_user.id").where("jd_user.id>3").group("jd_user.id").select(User.class);
+
+//query with union
+//(select id,name from jd_user where id=4 ) union all (select id,name from jd_user where id<3) union (select id,name from jd_user where id=3)
+res = new M("user").field("id,name").where("id=4").union("select id,name from jd_user where id<3",true)
+					.union("select id,name from jd_user where id=3",false).select(User.class);
+
+//statistical query
 long num= new M("user").where("id>3").count();
-System.out.println("count:"+num);
 num= D.M("user").fetchSql(true).where("id>3").count("id");
-System.out.println("count:"+num);
 num= (long) D.M("user").fetchSql(false).where("id<0").max("id");
-System.out.println("max:"+num);
 num= (long) D.M("user").where("id<3").max("id");
-System.out.println("max:"+num);
 num= (long) D.M("user").min("id");
-System.out.println("min:"+num);
 num= (long) D.M("user").where("id>3").min("id");
-System.out.println("min:"+num);
 num= (long) D.M("user").fetchSql(false).where("id>3").avg("id");
-System.out.println("avg:"+num);
 double avg= D.M("user").fetchSql(false).where("id>3").avg("id");
-System.out.println("avg:"+avg);
 num= (long) D.M("user").where("id>13441").sum("age");
-System.out.println("sum:"+num);
 ```
+
+>  By calling the method of `fetchSql(true)`,you can get the SQL statement  `ThinkJD` produced(exception way) and there will be no operation for the database.
+![fetchSql](https://img-blog.csdn.net/2018042023324417?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xleXR0b24=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 user table fields：
 
@@ -193,8 +211,6 @@ public class User {
 }
 
 ```
-
-> by calling the method of `fetchSql(true)`,you can get the SQL statement  `ThinkJD` produced(exception way) and there will be no operation for the database.
 
 ## 0x05 Add method
 | Operation| Param| Note | 
