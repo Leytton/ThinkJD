@@ -10,7 +10,7 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.1.2";
+	private static String version="V1.2.3";
 	private static String TablePrefix="";
 	
 	public static M M() throws SQLException {
