@@ -2,6 +2,8 @@
 
 [**English Document**](https://blog.csdn.net/Leytton/article/details/80021029)
 
+最新版本 V1.2.3
+
 # 1 简介
 
 `ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。
@@ -65,6 +67,8 @@ D.setTablePrefix("jd_");
 //D.M('user') 将会操作 `jd_user` 表
 ```
 
+> 注:`D.M('user').prefix('jd_')`方法可单独指定表前缀【V1.2.3新增】
+
 ## 0x03 过滤方法
 | 操作| 参数| 示例 |说明| 
 | ------------- |------------- |------------- | -------------
@@ -92,34 +96,48 @@ D.setTablePrefix("jd_");
 |sum|double sum(String field)
 
 ```
+//find查询
+//select id,name from jd_user where id>4 order by id asc limit 0,1
+User res = D.M("user").field("id,name").where("id>?",4).order("id asc").find(User.class);
+
+//find 根据id查询
 //select * from user where id=3 limit 0,1
 User user = D.M("user").find(User.class,3);
 
+//find根据字段查询
+//select * from jd_user where name='Tom' limit 0,1
+User user=D.M("user").fetchSql(true).find(User.class,"name","Bob");
+
+//where,field过滤
 //select id,name,weight from jd_user where id>3
 List<User> res = new M("user").field("id,name,weight").where("id>3").select(User.class);
 
+//group分组查询
 //select sex,sum(weight) as weight,avg(age) as age,count(id) as num from jd_user where id>5 group by sex order by sex desc limit 0,10
 res = new M("user").field("sex,sum(weight) as weight,avg(age) as age,count(id) as num").where("id>?",5).group("sex").order("sex desc").page(1, 10).select(User.class);
 
+//join联表查询
+//select jd_user.id,name,weight,sum(gold) as num from jd_user left join jd_gold on user_id=jd_user.id where jd_user.id>3 group by jd_user.id
+res = new M("user").field("jd_user.id,name,weight,sum(gold) as num").join("left join jd_gold on user_id=jd_user.id").where("jd_user.id>3").group("jd_user.id").select(User.class);
+
+//union联表查询
+//(select id,name from jd_user where id=4 ) union all (select id,name from jd_user where id<3) union (select id,name from jd_user where id=3)
+res = new M("user").field("id,name").where("id=4").union("select id,name from jd_user where id<3",true)
+					.union("select id,name from jd_user where id=3",false).select(User.class);
+
+//统计查询
 long num= new M("user").where("id>3").count();
-System.out.println("count:"+num);
 num= D.M("user").fetchSql(true).where("id>3").count("id");
-System.out.println("count:"+num);
 num= (long) D.M("user").fetchSql(false).where("id<0").max("id");
-System.out.println("max:"+num);
 num= (long) D.M("user").where("id<3").max("id");
-System.out.println("max:"+num);
 num= (long) D.M("user").min("id");
-System.out.println("min:"+num);
 num= (long) D.M("user").where("id>3").min("id");
-System.out.println("min:"+num);
 num= (long) D.M("user").fetchSql(false).where("id>3").avg("id");
-System.out.println("avg:"+num);
 double avg= D.M("user").fetchSql(false).where("id>3").avg("id");
-System.out.println("avg:"+avg);
 num= (long) D.M("user").where("id>13441").sum("age");
-System.out.println("sum:"+num);
 ```
+
+> 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
 
 user表结构：
 
@@ -193,9 +211,6 @@ public class User {
 }
 
 ```
-
-
-> 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
 
 ## 0x05 插入数据
 | 操作| 参数| 说明|
