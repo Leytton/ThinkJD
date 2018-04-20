@@ -81,7 +81,7 @@ D.setTablePrefix("jd_");
 |`order`|order(String order)|order("id desc")
 |`page`|page(long page, long rows)|page(1,10)
 |`limit`|¢Ùlimit(long rows)<br>¢Úlimit(long offset, long rows)|¢Ùlimit(10)<br>¢Úlimit(1,10)
-|`union`|union(String union,Boolean isAll)|¢Ùunion("select from user_two where id>1234",false)<br>¢Úunion("select from user_two where id>1234",true)
+|`union`|union(String union,Boolean isAll)|¢Ùunion("select * from user_two where id>1234",false)<br>¢Úunion("select * from user_two where id>1234",true)
 
 ## 0x04 ²éÑ¯Êý¾Ý
 
