@@ -385,11 +385,16 @@ public class M {
 	}
 
 	private boolean doFetchSql() throws SQLException {
-		sql = sql.replace(" +", " ").trim();
+		sql = sql.replaceAll(" +", " ").trim();
 		if (fetchSql) {
 			this.close();
+			String msg=	"¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T\r\n"
+					+	"¨USQL debuging and you'll get a invalid return value !!!\r\n"
+					+	"¨U"+sql+"\r\n"
+					+	"¨UBy ThinkJDBC "+D.getVersion()+"\r\n"
+					+	"¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T";
 			try {
-				throw new Exception("###SQL debuging and you'll get a invalid return value###\r\n###" + sql+"###");
+				throw new Exception("\r\n" + msg);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

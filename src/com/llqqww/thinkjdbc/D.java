@@ -10,7 +10,7 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="ThinkJDBC V1.1.2 By Leytton 2018/04/14. Apache 2.0 Licence";
+	private static String version="V1.1.2";
 	private static String TablePrefix="";
 	
 	public static M M() throws SQLException {
@@ -66,8 +66,12 @@ public class D {
 	}
 
 	public static String getVersion(){
-		System.out.println(version);
 		return version;
+	}
+	
+	public static void about() {
+		String about="ThinkJDBC "+version+" By Leytton 2018/04/14. Apache 2.0 Licence";
+		System.out.println(about);
 	}
 	
 }
