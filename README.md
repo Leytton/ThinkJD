@@ -138,6 +138,7 @@ num= (long) D.M("user").where("id>13441").sum("age");
 ```
 
 > 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
+![fetchSql](https://img-blog.csdn.net/2018042023324417?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xleXR0b24=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 user表结构：
 
