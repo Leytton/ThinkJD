@@ -2,7 +2,6 @@ package com.llqqww.thinkjdbc;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +14,7 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.2.4_5";
+	private static String version="V1.3.1_6";
 	private static String TablePrefix="";
 	
 	static{
