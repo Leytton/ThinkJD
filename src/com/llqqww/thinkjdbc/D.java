@@ -32,6 +32,8 @@ public class D {
 			} catch (IOException |ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+		}else {
+			cfgFile=null;
 		}
 		
 	}
