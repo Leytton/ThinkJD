@@ -1,6 +1,6 @@
-[**中文文档**](https://github.com/Leytton/ThinkJD/blob/master/README.md)
+[**中文文档**](https://gitee.com/Leytton/ThinkJD/blob/master/README.md)
 
-[**English Document**](https://github.com/Leytton/ThinkJD/blob/master/README_EN.md)
+[**English Document**](https://gitee.com/Leytton/ThinkJD/blob/master/README_EN.md)
 
 最新版本 V1.3.1_6
 
