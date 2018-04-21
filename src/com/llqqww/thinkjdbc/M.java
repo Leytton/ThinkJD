@@ -317,13 +317,13 @@ public class M {
 
 	private boolean buildSql_Select() throws SQLException {
 		initSql();
-		if ("" == this.field) {
+		if (this.field.equals("")) {
 			this.field = "*";
 		}
-		if ("" == this.table) {
+		if (this.table.equals("")) {
 			throw new SQLException("Undefined table");
 		}
-		if ("" != this.having && "" == this.group) {
+		if (!this.having.equals("") && this.group.equals("")) {
 			throw new SQLException("Undefined 'group' before using 'having'");
 		}
 		sql = "select " + this.field + " from " + this.table + " " + this.join + " " + this.where + " " + this.group
@@ -336,10 +336,10 @@ public class M {
 
 	private boolean buildSql_Delete() throws SQLException {
 		initSql();
-		if ("" == this.table) {
+		if (this.table.equals("")) {
 			throw new SQLException("Undefined table");
 		}
-		if ("" == where) {
+		if (this.where.equals("")) {
 			throw new SQLException("Undefined where sql");
 		}
 		sql = "delete from " + this.table + " " + this.where + " " + this.order + " " + this.limit;
@@ -348,11 +348,11 @@ public class M {
 
 	private boolean buildSql_Insert() throws SQLException {
 		initSql();
-		if ("" == this.table) {
+		if (this.table.equals("")) {
 			throw new SQLException("Undefined table");
 		}
 		this.field = this.field.replaceAll(" ", "");
-		if ("" != this.field) {
+		if (!this.field.equals("")) {
 			this.field = "(" + this.field + ")";
 		}
 		if (null == param_data || param_data.length < 1) {
@@ -369,13 +369,13 @@ public class M {
 
 	private boolean buildSql_Update() throws SQLException {
 		initSql();
-		if ("" == this.table) {
+		if (this.table.equals("")) {
 			throw new SQLException("Undefined table");
 		}
-		if ("" == where) {
+		if (this.where.equals("")) {
 			throw new SQLException("Undefined where sql");
 		}
-		if ("" == this.field) {
+		if (this.field.equals("")) {
 			throw new SQLException("Undefined fields to update");
 		}
 		this.field = this.field.replaceAll(" ", "");
@@ -389,7 +389,7 @@ public class M {
 		if (null == param_data || param_data.length < 1) {
 			throw new SQLException("Undefined data to update");
 		}
-		sql = "update " + this.table + " set " + setSql + " " + this.where + " " + this.order + " " + this.limit;
+		this.sql = "update " + this.table + " set " + setSql + " " + this.where + " " + this.order + " " + this.limit;
 		return doFetchSql();
 	}
 
@@ -398,7 +398,8 @@ public class M {
 		if (fetchSql) {
 			this.close();
 			String msg ="¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T\r\n"
-					+	"¨USQL debuging and you'll get a invalid return value !!!\r\n" + "¨U" + sql + "\r\n"
+					+	"¨USQL debuging and you'll get a invalid return value !!!\r\n" 
+					+	"¨U" + sql + "\r\n"
 					+	"¨UBy ThinkJDBC " + D.getVersion() + "\r\n"
 					+	"¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T";
 			try {

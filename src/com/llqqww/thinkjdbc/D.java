@@ -1,8 +1,13 @@
 package com.llqqww.thinkjdbc;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -10,8 +15,26 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.2.3";
+	private static String version="V1.2.4_5";
 	private static String TablePrefix="";
+	
+	static{
+		
+		File cfgFile=new File("thinkjdbc.properties");
+		if(cfgFile.exists()) {
+			try {
+				Properties cfg = new Properties();
+				cfg.load(new FileInputStream(cfgFile));
+				String DbUrl = cfg.getProperty("jdbcUrl");
+				String DbUser = cfg.getProperty("dataSource.user");
+				String DbPassword = cfg.getProperty("dataSource.password");
+				setDbConfig(DbUrl, DbUser, DbPassword);
+			} catch (IOException |ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
 	
 	public static M M() throws SQLException {
 		return new M();
