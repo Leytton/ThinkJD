@@ -1,12 +1,12 @@
-[**中文文档**](https://blog.csdn.net/Leytton/article/details/80021702)
+[**中文文档**](https://github.com/Leytton/ThinkJD/blob/master/README.md)
 
-[**English Document**](https://blog.csdn.net/Leytton/article/details/80021029)
+[**English Document**](https://github.com/Leytton/ThinkJD/blob/master/README_EN.md)
 
-最新版本 V1.2.3
+最新版本 V1.3.1_6
 
 # 1 简介
 
-`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。
+`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，使用完毕或程序异常都会关闭连接以免造成内存溢出。
 
 **先睹为快：**
 ```
@@ -270,6 +270,36 @@ num=D.M("user").where("id>=?",13421).delete();
 
 ```
 D.M().execute( sql1 [ sql2 , sql3 ... ] );
+```
+
+## 0x09 事务支持
+数据库表引擎应该为InnoDB以支持事务操作。
+`代码示例：`
+
+```
+Connection conn=null;
+try {
+	//获取已开启事务的数据库连接
+	conn = D.M().startTrans();
+	//使用事务连接操作数据库
+	long id=new M("gold").trans(conn).field("user_id,gold,type,time",3,5,0,System.currentTimeMillis()/1000).add();
+	System.out.println(id);
+	if(id>0) {
+		throw new SQLException("Transaction Rollback Test");
+	}
+	id=new M("gold").trans(conn).field("user_id,gold,type,time",3,5,0,System.currentTimeMillis()/1000).add();
+	System.out.println(id);
+	//提交事务
+	D.M().commit(conn);
+} catch (SQLException e) {
+	e.printStackTrace();
+	try {
+		//事务回滚
+		D.M().rollback(conn);
+	} catch (SQLException e1) {
+		e1.printStackTrace();
+	}
+}
 ```
 
 # 3 许可证
