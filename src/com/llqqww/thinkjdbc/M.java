@@ -30,18 +30,23 @@ public class M {
 	private Object[] param_where;
 	private Object[] param_data;
 
-	public M() throws SQLException {
+	public M(){
 	}
 
-	public M(String table) throws SQLException {
+	public M(String table){
 		this.table = table;
 	}
-
+	
+	public M trans(Connection conn) {
+		this.conn = conn;
+		return this;
+	}
+	
 	public M fetchSql(boolean fetchSql) {
 		this.fetchSql = fetchSql;
 		return this;
 	}
-
+	
 	public M table(String table) {
 		this.table = table;
 		return this;
@@ -121,14 +126,17 @@ public class M {
 		return this;
 	}
 
-	public <T> List<T> select(Class<T> type) throws SQLException {
-		if (buildSql_Select()) {
-			List<T> beanList = new QueryRunner().query(conn, sql, new BeanListHandler<T>(type), param_where);
+	public <T> List<T> select(Class<T> type) throws SQLException{
+		try {
+			if (buildSql_Select()) {
+				List<T> beanList = new QueryRunner().query(conn, sql, new BeanListHandler<T>(type), param_where);
+				return beanList;
+			}
+		} catch (SQLException e) {
 			this.close();
-			return beanList;
-		} else {
-			return null;
+			throw e;
 		}
+		return null;
 	}
 
 	/**
@@ -164,15 +172,19 @@ public class M {
 	 * @return
 	 * @throws SQLException
 	 */
-	public <T> T find(Class<T> type) throws SQLException {
+	public <T> T find(Class<T> type) throws SQLException{
 		this.limit(1);
-		if (buildSql_Select()) {
-			T bean = new QueryRunner().query(conn, sql, new BeanHandler<T>(type), param_where);
+		try {
+			if (buildSql_Select()) {
+				T bean = new QueryRunner().query(conn, sql, new BeanHandler<T>(type), param_where);
+				this.close();
+				return bean;
+			}
+		} catch (SQLException e) {
 			this.close();
-			return bean;
-		} else {
-			return null;
+			throw e;
 		}
+		return null;
 	}
 
 	public long count() throws SQLException {
@@ -199,23 +211,22 @@ public class M {
 		return getTjNum("sum(" + field + ") as tj_num");
 	}
 
-	public long add() throws SQLException {
-		if (buildSql_Insert()) {
-			Map<String, Object> result_insert = new QueryRunner().insert(conn, sql, new MapHandler(), param_data);
-			if (result_insert != null && result_insert.size() > 0) {
+	public long add() throws SQLException{
+		try {
+			if (buildSql_Insert()) {
+				Map<String, Object> result_insert = new QueryRunner().insert(conn, sql, new MapHandler(), param_data);
 				long id = (long) result_insert.get("GENERATED_KEY");
-				this.close();
+				close();
 				return id;
-			} else {
-				this.close();
-				throw new SQLException();
 			}
-		} else {
-			return 0;
+		} catch (SQLException e) {
+			close();
+			throw e;
 		}
+		return 0;
 	}
 
-	public long save() throws SQLException {
+	public long save() throws SQLException{
 		Object[] params = new Object[param_data.length + param_where.length];
 		int obj_index = 0;
 		for (Object object : param_data) {
@@ -224,13 +235,17 @@ public class M {
 		for (Object object : param_where) {
 			params[obj_index++] = object;
 		}
-		if (buildSql_Update()) {
-			long num = new QueryRunner().update(conn, sql, params);
-			this.close();
-			return num;
-		} else {
-			return 0;
+		try {
+			if(buildSql_Update()) {
+				long num = new QueryRunner().update(conn, sql, params);
+				close();
+				return num;
+			}
+		} catch (SQLException e) {
+			close();
+			throw e;
 		}
+		return 0;
 	}
 
 	/**
@@ -266,45 +281,110 @@ public class M {
 	 * @throws SQLException
 	 */
 	public long delete() throws SQLException {
-		if (buildSql_Delete()) {
-			int result_delete = new QueryRunner().update(conn, sql, param_where);
-			this.close();
-			return result_delete;
-		} else {
-			return 0;
+		try {
+			if(buildSql_Delete()) {
+				int result_delete = new QueryRunner().update(conn, sql, param_where);
+				this.close();
+				return result_delete;
+			}else{
+				return 0;
+			}
+		}catch (SQLException e) {
+			close();
+			throw e;
 		}
 	}
 
-	public void execute(String... sqls) throws SQLException {
+	public void execute(String... sqls) throws SQLException{
 		if (sqls.length < 1) {
 			return;
 		}
 		PreparedStatement stmt = null;
-		for (String sql : sqls) {
-			stmt = conn.prepareStatement(sql);
-			stmt.execute();
-		}
-		if (null != stmt && !stmt.isClosed()) {
-			stmt.close();
-		}
-		this.close();
-	}
-
-	public String getField(String field) throws SQLException {
-		this.field(field);
-		if (buildSql_Select()) {
-			Object res = new QueryRunner().query(conn, sql, new ScalarHandler<Object>(), param_where);
-			this.close();
-			if (null == res) {
-				return null;
-			} else {
-				return res.toString();
+		try {
+			for (String sql : sqls) {
+				stmt = conn.prepareStatement(sql);
+				stmt.execute();
 			}
-		} else {
-			return null;
+			if (null != stmt && !stmt.isClosed()) {
+				stmt.close();
+			}
+			close();
+		} catch (SQLException e) {
+			close();
+			throw e;
 		}
 	}
-
+	
+	/**
+	 * 获取某个字段值
+	 * @param field
+	 * @return
+	 * @throws SQLException
+	 */
+	public String getField(String field) throws SQLException{
+		this.field(field);
+		try {
+			if (buildSql_Select()) {
+				Object res = new QueryRunner().query(conn, sql, new ScalarHandler<Object>(), param_where);
+				close();
+				if (null != res) {
+					return res.toString();
+				}
+			}
+		} catch (SQLException e) {
+			close();
+			throw e;
+		}
+		return null;
+	}
+	
+	/**
+	 * 开启事务,返回conn,后续操作M("table").conn(conn)传入此conn事务才有效
+	 * 中途异常关闭conn连接
+	 * @return Connection
+	 * @throws SQLException
+	 */
+	public Connection startTrans() throws SQLException{
+		try {
+			initDB();
+			conn.setAutoCommit(false);
+		} catch (SQLException e) {
+			close(true);
+			throw e;
+		}
+		return conn;
+	}
+	
+	/**
+	 * 事务提交
+	 * 中途异常关闭conn连接
+	 * @throws SQLException
+	 */
+	public void commit(Connection conn) throws SQLException{
+		this.conn=conn;
+		try {
+			conn.commit();
+			close(true);
+		} catch (SQLException e) {
+			close(true);
+			throw e;
+		}
+	}
+	
+	/**
+	 * 事务回滚，中途异常关闭conn连接
+	 * @throws SQLException
+	 */
+	public void rollback(Connection conn) throws SQLException{
+		this.conn=conn;
+		try {
+			conn.rollback();
+		} catch (SQLException e) {
+			close(true);
+			throw e;
+		}
+	}
+	
 	private double getTjNum(String field) throws SQLException {
 		String res = this.getField(field);
 		if (null != res) {
@@ -415,7 +495,9 @@ public class M {
 	}
 
 	private void initDB() throws SQLException {
-		this.conn = D.getConnection();
+		if(null==this.conn) {
+			this.conn = D.getConnection();
+		}
 	}
 
 	private void initSql() {
@@ -431,8 +513,23 @@ public class M {
 	}
 
 	private void close() throws SQLException {
+		close(false);
+	}
+	
+	/**
+	 * 强行关闭(不管有没有事务)
+	 * @param isForce
+	 * @throws SQLException
+	 */
+	private void close(Boolean isEndTrans) throws SQLException {
 		if (null != conn && !conn.isClosed()) {
-			conn.close();
+			if(isEndTrans) {
+				conn.setAutoCommit(true);//关闭事务
+				conn.close();
+			}else if(conn.getAutoCommit()){
+				conn.close();
+			}
+			//如果开启事务则暂时不关闭
 		}
 	}
 }
