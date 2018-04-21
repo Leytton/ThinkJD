@@ -43,14 +43,24 @@ D.M("user").delete(id);
 ## 0x02 定义数据库
 ThinkJD支持直接定义用户名密码访问数据库，也支持使用Hikari、C3P0等数据库连接池。
 
-**首先定义数据库连接方式：**
+**数据库连接方式有三种：**
 
-### (1)帐号密码访问数据库
+### (1)配置文件方式
+在项目根目录下添加文件(跟Hikari配置文件格式一样) 
+程序第一次启动时会自动加载读取配置文件，如果文件不存在则忽略。【V1.2.4_5 增加功能】
+`thinkjdbc.properties`
+```
+jdbcUrl = jdbc:mysql://127.0.0.1:3306/thinkjdbc?useUnicode=true&characterEncoding=UTF-8
+dataSource.user = root
+dataSource.password = root
+```
+
+### (2)帐号密码方式
 ```
 D.setDbConfig("jdbc:mysql://127.0.0.1:3306/database?useUnicode=true&characterEncoding=UTF-8","root","root");
 ```
 
-### (2)使用数据库连接池
+### (3)使用数据库连接池
 例如使用Hikari连接池： 
 ```
 HikariConfig config = new HikariConfig("/hikari.properties");
