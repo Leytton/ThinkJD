@@ -6,7 +6,7 @@ Latest Version V1.2.3
 
 # 1 Project
 
-`ThinkJD`, also known as `ThinkJDBC`, an easy and powerful open source JDBC library. You can operate the database with one line of Java code,just like the M method of `ThinkPHP` framework.
+`ThinkJD`, also known as `ThinkJDBC`, an easy and powerful open source JDBC library. You can operate the database with one line  code of Java,just like the M method of `ThinkPHP` framework.
 
 **Quick Start:**
 
@@ -138,6 +138,7 @@ num= (long) D.M("user").where("id>13441").sum("age");
 ```
 
 >  By calling the method of `fetchSql(true)`,you can get the SQL statement  `ThinkJD` produced(exception way) and there will be no operation for the database.
+>  
 ![fetchSql](https://img-blog.csdn.net/2018042023324417?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0xleXR0b24=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
 user table fields£º
