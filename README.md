@@ -47,7 +47,9 @@ ThinkJD支持直接定义用户名密码访问数据库，也支持使用Hikari、C3P0等数据库连接池。
 
 ### (1)配置文件方式
 在项目根目录下添加文件(跟Hikari配置文件格式一样) 
+
 程序第一次启动时会自动加载读取配置文件，如果文件不存在则忽略。【V1.2.4_5 增加功能】
+
 `thinkjdbc.properties`
 ```
 jdbcUrl = jdbc:mysql://127.0.0.1:3306/thinkjdbc?useUnicode=true&characterEncoding=UTF-8
