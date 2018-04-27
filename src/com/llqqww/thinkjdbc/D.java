@@ -3,6 +3,12 @@ package com.llqqww.thinkjdbc;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,11 +20,13 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.3.1_6";
+	private static String version="V1.4.1_8";
 	private static String TablePrefix="";
+	private static String pk="id";
+	private static boolean isPkAutoInc=true;
+	private static boolean checkField=true;
 	
 	static{
-		
 		File cfgFile=new File("thinkjdbc.properties");
 		if(cfgFile.exists()) {
 			try {
@@ -28,6 +36,7 @@ public class D {
 				String DbUser = cfg.getProperty("dataSource.user");
 				String DbPassword = cfg.getProperty("dataSource.password");
 				setDbConfig(DbUrl, DbUser, DbPassword);
+				//System.out.println("File Config");
 			} catch (IOException |ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -43,6 +52,14 @@ public class D {
 
 	public static M M(String table) throws SQLException {
 		return new M(table);
+	}
+	
+	public static M M(Object bean) throws SQLException {
+		return new M(bean);
+	}
+	
+	public static M M(Class<?> beanClass) throws SQLException {
+		return new M(beanClass);
 	}
 	
 	public static Connection getConnection() throws SQLException {
@@ -89,12 +106,36 @@ public class D {
 		TablePrefix = tablePrefix;
 	}
 
+	public static boolean isCheckField() {
+		return checkField;
+	}
+
+	public static void setCheckField(boolean checkField) {
+		D.checkField = checkField;
+	}
+
+	public static String getPk() {
+		return pk;
+	}
+
+	public static void setPk(String pk) {
+		D.pk = pk;
+	}
+
+	public static boolean isPkAutoInc() {
+		return isPkAutoInc;
+	}
+
+	public static void setPkAutoInc(boolean isPkAutoInc) {
+		D.isPkAutoInc = isPkAutoInc;
+	}
+
 	public static String getVersion(){
 		return version;
 	}
 	
 	public static void about() {
-		String about="ThinkJDBC "+version+" By Leytton 2018/04/14. Apache 2.0 Licence";
+		String about="ThinkJDBC "+version+" By Leytton 2018/04/14-. Apache 2.0 Licence";
 		System.out.println(about);
 	}
 	
