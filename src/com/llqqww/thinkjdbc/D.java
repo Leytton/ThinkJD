@@ -20,7 +20,7 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.1_8";
+	private static String version="V1.4.2_9";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
