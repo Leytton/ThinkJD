@@ -1,4 +1,4 @@
-![ThinkJDBC](https://img-blog.csdn.net/20180428105737300)
+![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
 [**中文文档 V1.4.2_10**](https://blog.csdn.net/Leytton/article/details/80021702)
 
@@ -277,13 +277,13 @@ user.setAge(10);
 user.setName("Hello");
 
 //insert into jd_user (age,name) values(?,?) Params[10,Hello]
-num=D.M(user).save();
+num=D.M(user).add();
 
 //insert into jd_user (name) values(?) Params[Hello]
-num=D.M(user).field("name").save();
+num=D.M(user).field("name").add();
 
 //insert into jd_user (id,age,name) values(?,?,?) Params[5,10,Hello]
-num=D.M(user).autoInc(false).save();
+num=D.M(user).autoInc(false).add();
 ```
 
 ## 0x06 更新数据
