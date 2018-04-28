@@ -780,9 +780,9 @@ public class M {
 	}
 	
 	private void initFieldData() {
+		Integer obj_index = null;
 		//没自定义字段就使用bean里面的
 		if(null==this.field) {
-			Integer obj_index = null;
 			//没定义数据就用bean里面的
 			if(null==this.param_data && null!=bean) {
 				obj_index=0;
@@ -796,6 +796,21 @@ public class M {
 				}
 				if(null!=obj_index) {
 					this.param_data[obj_index++]=fieldInfoMap.get(key).getValueObj();
+				}
+			}
+		}else {//如果指定了field,却没指定data,则提取出数据
+			if(null==this.param_data && null!=bean) {
+				obj_index=0;
+				String[] fileds = field.split(",");
+				this.param_data = new Object[fileds.length];
+				//包含"="号的字段表示内部有表达式,无需构造key=?
+				for (String field : fileds) {
+					if(fieldInfoMap.containsKey(field)) {
+						Object filedData=fieldInfoMap.get(field).getValueObj();
+						if(null!=filedData) {
+							this.param_data[obj_index++]=filedData;
+						}
+					}
 				}
 			}
 		}
