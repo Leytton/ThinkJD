@@ -1,10 +1,9 @@
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
-[**中文文档 V1.4.2_10**](https://blog.csdn.net/Leytton/article/details/80021702)
-
-[**English Document V1.3.1_8**](https://blog.csdn.net/Leytton/article/details/80021029)
-
-最新版本 V1.4.2_10
+[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.2__10-green.svg?longCache=true&style=flat-square)](#)
+[![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702)
+[![English Document](https://img.shields.io/badge/English%20Document-V1.3.1__8-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029)
+[![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
 
 # 1 简介
 
@@ -45,8 +44,6 @@ D.M("user").delete(id);
 **项目主页** https://github.com/Leytton/ThinkJD (Github)   https://gitee.com/Leytton/ThinkJD (码云)
 
 **测试项目** https://github.com/Leytton/ThinkJD_Demo
-
-**博客主页** https://blog.csdn.net/Leytton
 
 # 2 使用方法
 
