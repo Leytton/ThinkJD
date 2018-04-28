@@ -234,6 +234,7 @@ public class M {
 	 * @throws SQLException
 	 */
 	public <T> T find(Object value) throws SQLException {
+		this.pk=null!=this.pk?this.pk:D.getPk();
 		return find(this.pk, value);
 	}
 
@@ -346,6 +347,7 @@ public class M {
 	 * @throws SQLException
 	 */
 	public long delete(Object value) throws SQLException {
+		this.pk=null!=this.pk?this.pk:D.getPk();
 		return delete(this.pk, value);
 	}
 
@@ -526,7 +528,7 @@ public class M {
 	private boolean buildSql_Delete() throws SQLException {
 		if(null!=fieldInfoMap) {
 			//没指定where则提取主键和值构造where语句
-			if(null==this.where && null!=this.pk) {
+			if(null==this.where) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo && null!=fieldInfo.getValueObj()) {
 					this.where(this.pk+"=?",fieldInfo.getValueObj());
@@ -552,8 +554,8 @@ public class M {
 			if(null!=this.pk) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo) {
-					//A:用户设置>注释
-					boolean autoInc= null!=this.isPkAutoInc?this.isPkAutoInc:fieldInfo.isAutoInc();
+					//A:用户设置>注释>D配置
+					boolean autoInc= null!=this.isPkAutoInc?this.isPkAutoInc:(null!=fieldInfo.isAutoInc()?fieldInfo.isAutoInc():D.isPkAutoInc());
 					if(autoInc) {
 						fieldInfoMap.remove(this.pk);
 					}
@@ -588,8 +590,8 @@ public class M {
 			if(null!=this.pk) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo) {
-					//A:用户设置>注释
-					boolean autoInc= null!=this.isPkAutoInc?this.isPkAutoInc:fieldInfo.isAutoInc();
+					//A:用户设置>注释>D配置
+					boolean autoInc= null!=this.isPkAutoInc?this.isPkAutoInc:(null!=fieldInfo.isAutoInc()?fieldInfo.isAutoInc():D.isPkAutoInc());
 					if(autoInc) {
 						fieldInfoMap.remove(this.pk);
 					}
