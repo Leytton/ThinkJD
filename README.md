@@ -123,8 +123,8 @@ D.setTablePrefix("jd_");
 
 | 操作| 参数| 说明|
 | -------- |--------|--------
-|select|<`T`> List<`T`> select(Class<`T`> type)
-|find|①<`T`> T find(Class<`T`> type)<br>②<`T`> T find(Class<`T`> type, long id)<br>③<`T`> T find(Class<`T`> type, String key, Object value)
+|select|<`T`> List<`T`> select()
+|find|①<`T`> T find()<br>②<`T`> T find(Object value)<br>③<`T`> T find(String key, Object value)
 |count|①long count()<br>②long count(String field)
 |max|double max(String field)
 |min|double min(String field)
