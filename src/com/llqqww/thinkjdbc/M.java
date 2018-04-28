@@ -44,7 +44,7 @@ public class M {
 	}
 	
 	public M(String table){
-		System.out.println("table mode");
+//		System.out.println("table mode");
 		table(table);
 	}
 	
@@ -57,14 +57,14 @@ public class M {
 	}
 	
 	public M bean(Object bean) {
-		System.out.println("bean mode");
+//		System.out.println("bean mode");
 		this.bean=bean;
 		initTableDataByBeanClass();
 		return this;
 	}
 	
 	public M bean(Class<?> beanClass) {
-		System.out.println("class mode");
+//		System.out.println("class mode");
 		this.beanClass=beanClass;
 		initTableDataByBeanClass();
 		return this;
