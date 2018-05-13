@@ -1,68 +1,68 @@
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
-[![×îĞÂ°æ±¾](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.2__10-green.svg?longCache=true&style=flat-square)](#)
-[![ÖĞÎÄÎÄµµ](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702)
-[![English Document](https://img.shields.io/badge/English%20Document-V1.3.1__8-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029)
+[![æœ€æ–°ç‰ˆæœ¬](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.2__10-green.svg?longCache=true&style=flat-square)](#)
+[![ä¸­æ–‡æ–‡æ¡£](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702)
+[![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029)
 [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
 
-# 1 ¼ò½é
+# 1 ç®€ä»‹
 
-`ThinkJD`£¬ÓÖÃû`ThinkJDBC`£¬Ò»¸ö¼ò½à¶øÇ¿´óµÄ¿ªÔ´JDBC²Ù×÷¿â¡£Äã¿ÉÒÔÊ¹ÓÃJavaÏñ`ThinkPHP`¿ò¼ÜµÄM·½·¨Ò»Ñù£¬`Ò»ĞĞ´úÂë¸ã¶¨Êı¾İ¿â²Ù×÷`¡£ThinkJD»á×Ô¶¯¹ÜÀíÊı¾İ¿âÁ¬½Ó£¬Ê¹ÓÃÍê±Ï»ò³ÌĞòÒì³£¶¼»á¹Ø±ÕÁ¬½ÓÒÔÃâÔì³ÉÄÚ´æÒç³ö¡£
+`ThinkJD`ï¼Œåˆå`ThinkJDBC`ï¼Œä¸€ä¸ªç®€æ´è€Œå¼ºå¤§çš„å¼€æºJDBCæ“ä½œåº“ã€‚ä½ å¯ä»¥ä½¿ç”¨Javaåƒ`ThinkPHP`æ¡†æ¶çš„Mæ–¹æ³•ä¸€æ ·ï¼Œ`ä¸€è¡Œä»£ç æå®šæ•°æ®åº“æ“ä½œ`ã€‚ThinkJDä¼šè‡ªåŠ¨ç®¡ç†æ•°æ®åº“è¿æ¥ï¼Œä½¿ç”¨å®Œæ¯•æˆ–ç¨‹åºå¼‚å¸¸éƒ½ä¼šå…³é—­è¿æ¥ä»¥å…é€ æˆå†…å­˜æº¢å‡ºã€‚
 
-**ÏÈ¶ÃÎª¿ì£º**
+**å…ˆç¹ä¸ºå¿«ï¼š**
 ```
-//Êı¾İ¿âÅäÖÃ(Ö»Ğèµ÷ÓÃÒ»´Î)
+//æ•°æ®åº“é…ç½®(åªéœ€è°ƒç”¨ä¸€æ¬¡)
 D.setDbConfig("jdbc:mysql://127.0.0.1:3306/DbName?characterEncoding=UTF-8","root","root");
 
-//JavaBeanÄ£Ê½£¬×Ô¶¯»ñÈ¡±íÃû¡¢Ö÷¼ü¡¢×ÔÔöÊôĞÔ¡¢×Ö¶ÎÃûºÍÊı¾İ
+//JavaBeanæ¨¡å¼ï¼Œè‡ªåŠ¨è·å–è¡¨åã€ä¸»é”®ã€è‡ªå¢å±æ€§ã€å­—æ®µåå’Œæ•°æ®
 User user = new User();
 user.setAge(10);
 user.setName("Hello");
 user.setSex(true);
-//²åÈëÊı¾İ
+//æ’å…¥æ•°æ®
 long id=D.M(user).add();
-//²éÑ¯Êı¾İ
+//æŸ¥è¯¢æ•°æ®
 user=D.M(User.class).find(id);
-//¸üĞÂÊı¾İ
+//æ›´æ–°æ•°æ®
 user.setSex(false);
-D.M(user).field("sex").save();//²»Ö¸¶¨×Ö¶ÎÃûÄ¬ÈÏ¸üĞÂJavaBeanµÄËùÓĞ·Ç¿ÕÊôĞÔ
-//É¾³ıÊı¾İ
+D.M(user).field("sex").save();//ä¸æŒ‡å®šå­—æ®µåé»˜è®¤æ›´æ–°JavaBeançš„æ‰€æœ‰éç©ºå±æ€§
+//åˆ é™¤æ•°æ®
 D.M(user).delete();
 //D.M(User.class).delete(id);
 
-//TableÄ£Ê½£¬ÊÖ¶¯Ö¸¶¨±íÃû¡¢Ö÷¼ü¡¢×ÔÔöÊôĞÔ¡¢×Ö¶ÎÃûºÍÊı¾İ
-//²åÈëÊı¾İ
+//Tableæ¨¡å¼ï¼Œæ‰‹åŠ¨æŒ‡å®šè¡¨åã€ä¸»é”®ã€è‡ªå¢å±æ€§ã€å­—æ®µåå’Œæ•°æ®
+//æ’å…¥æ•°æ®
 long id=D.M("user").field("name,weight").data("Tom",60).add();
-//¸üĞÂÊı¾İ
+//æ›´æ–°æ•°æ®
 D.M("user").field("name,weight").data("Tom",100).where("id=?",id).save();
-//²éÑ¯Êı¾İ
+//æŸ¥è¯¢æ•°æ®
 user=D.M(User.class).find(id);
-//É¾³ıÊı¾İ
+//åˆ é™¤æ•°æ®
 D.M("user").delete(id);
 ```
 
-**ÏîÄ¿Ö÷Ò³** https://github.com/Leytton/ThinkJD (Github)   https://gitee.com/Leytton/ThinkJD (ÂëÔÆ)
+**é¡¹ç›®ä¸»é¡µ** https://github.com/Leytton/ThinkJD (Github)   https://gitee.com/Leytton/ThinkJD (ç äº‘)
 
-**²âÊÔÏîÄ¿** https://github.com/Leytton/ThinkJD_Demo
+**æµ‹è¯•é¡¹ç›®** https://github.com/Leytton/ThinkJD_Demo
 
-# 2 Ê¹ÓÃ·½·¨
+# 2 ä½¿ç”¨æ–¹æ³•
 
-## 0x01 Ìí¼ÓÒÀÀµ
-[ThinkJDBC-x.x.x-full.jar](https://github.com/Leytton/ThinkJD/releases) °üº¬ÁËThinkJDBC-x.x.x-core.jarºËĞÄ¿âºÍÁ½¸öÒÀÀµ¿â£¬Ö»ĞèÒªÌí¼ÓÕâÒ»¸öjar°ü¾ÍĞĞÁË
+## 0x01 æ·»åŠ ä¾èµ–
+[ThinkJDBC-x.x.x-full.jar](https://github.com/Leytton/ThinkJD/releases) åŒ…å«äº†ThinkJDBC-x.x.x-core.jaræ ¸å¿ƒåº“å’Œä¸¤ä¸ªä¾èµ–åº“ï¼Œåªéœ€è¦æ·»åŠ è¿™ä¸€ä¸ªjaråŒ…å°±è¡Œäº†
 
  - mysql-connector-java-5.1.39.jar
  - commons-dbutils-1.6.jar
 
  
-## 0x02 ¶¨ÒåÊı¾İ¿â
-ThinkJDÖ§³ÖÖ±½Ó¶¨ÒåÓÃ»§ÃûÃÜÂë·ÃÎÊÊı¾İ¿â£¬Ò²Ö§³ÖÊ¹ÓÃHikari¡¢C3P0µÈÊı¾İ¿âÁ¬½Ó³Ø¡£
+## 0x02 å®šä¹‰æ•°æ®åº“
+ThinkJDæ”¯æŒç›´æ¥å®šä¹‰ç”¨æˆ·åå¯†ç è®¿é—®æ•°æ®åº“ï¼Œä¹Ÿæ”¯æŒä½¿ç”¨Hikariã€C3P0ç­‰æ•°æ®åº“è¿æ¥æ± ã€‚
 
-**Êı¾İ¿âÁ¬½Ó·½Ê½ÓĞÈıÖÖ£º**
+**æ•°æ®åº“è¿æ¥æ–¹å¼æœ‰ä¸‰ç§ï¼š**
 
-### (1)ÅäÖÃÎÄ¼ş·½Ê½
-ÔÚÏîÄ¿¸ùÄ¿Â¼ÏÂÌí¼ÓÎÄ¼ş(¸úHikariÅäÖÃÎÄ¼ş¸ñÊ½Ò»Ñù) 
+### (1)é…ç½®æ–‡ä»¶æ–¹å¼
+åœ¨é¡¹ç›®æ ¹ç›®å½•ä¸‹æ·»åŠ æ–‡ä»¶(è·ŸHikarié…ç½®æ–‡ä»¶æ ¼å¼ä¸€æ ·) 
 
-³ÌĞòµÚÒ»´ÎÆô¶¯Ê±»á×Ô¶¯¼ÓÔØ¶ÁÈ¡ÅäÖÃÎÄ¼ş£¬Èç¹ûÎÄ¼ş²»´æÔÚÔòºöÂÔ¡£¡¾V1.2.4_5 Ôö¼Ó¹¦ÄÜ¡¿
+ç¨‹åºç¬¬ä¸€æ¬¡å¯åŠ¨æ—¶ä¼šè‡ªåŠ¨åŠ è½½è¯»å–é…ç½®æ–‡ä»¶ï¼Œå¦‚æœæ–‡ä»¶ä¸å­˜åœ¨åˆ™å¿½ç•¥ã€‚ã€V1.2.4_5 å¢åŠ åŠŸèƒ½ã€‘
 
 `thinkjdbc.properties`
 ```
@@ -71,32 +71,32 @@ dataSource.user = root
 dataSource.password = root
 ```
 
-### (2)ÕÊºÅÃÜÂë·½Ê½
+### (2)å¸å·å¯†ç æ–¹å¼
 ```
 D.setDbConfig("jdbc:mysql://127.0.0.1:3306/database?useUnicode=true&characterEncoding=UTF-8","root","root");
 ```
 
-### (3)Ê¹ÓÃÊı¾İ¿âÁ¬½Ó³Ø
-ÀıÈçÊ¹ÓÃHikariÁ¬½Ó³Ø£º 
+### (3)ä½¿ç”¨æ•°æ®åº“è¿æ¥æ± 
+ä¾‹å¦‚ä½¿ç”¨Hikariè¿æ¥æ± ï¼š 
 ```
 HikariConfig config = new HikariConfig("/hikari.properties");
 HikariDataSource dataSource = new HikariDataSource(config);
 D.setDataSource(dataSource);
 ```
-`×¢£ºÈç¹û¶¨ÒåÁËÊı¾İ¿âÁ¬½Ó³Ø£¬ThinkJD»áÓÅÏÈÊ¹ÓÃ¡£`
+`æ³¨ï¼šå¦‚æœå®šä¹‰äº†æ•°æ®åº“è¿æ¥æ± ï¼ŒThinkJDä¼šä¼˜å…ˆä½¿ç”¨ã€‚`
 
 
-### (3)ÅäÖÃ±íÇ°×º
-Ö»Ğèµ÷ÓÃÒ»´Î£¬ÅäÖÃ±íÇ°×º²»ÊÇ±ØĞèµÄ
+### (3)é…ç½®è¡¨å‰ç¼€
+åªéœ€è°ƒç”¨ä¸€æ¬¡ï¼Œé…ç½®è¡¨å‰ç¼€ä¸æ˜¯å¿…éœ€çš„
 ```
 D.setTablePrefix("jd_");
-//D.M('user') D.M(User.class)½«»á²Ù×÷ `jd_user` ±í
+//D.M('user') D.M(User.class)å°†ä¼šæ“ä½œ `jd_user` è¡¨
 ```
 
-> ×¢:`D.M('user').prefix('jd_')`·½·¨¿Éµ¥¶ÀÖ¸¶¨±íÇ°×º¡¾V1.2.3ĞÂÔö¡¿
+> æ³¨:`D.M('user').prefix('jd_')`æ–¹æ³•å¯å•ç‹¬æŒ‡å®šè¡¨å‰ç¼€ã€V1.2.3æ–°å¢ã€‘
 
-## 0x03 Á¬¹á²Ù×÷
-| ²Ù×÷| ²ÎÊı| Ê¾Àı |ËµÃ÷| 
+## 0x03 è¿è´¯æ“ä½œ
+| æ“ä½œ| å‚æ•°| ç¤ºä¾‹ |è¯´æ˜| 
 | ------------- |------------- |------------- | -------------
 |`table`|table(String table) | table("user") | 
 |`pk`|pk(String key) | pk("id") | 
@@ -106,59 +106,59 @@ D.setTablePrefix("jd_");
 |`data`|data(Object... dataParam)| data(11,"Leytton")| 
 |`setInc`|setInc(String key,long num)| setInc("gold",5)| 
 |`setDec`|setDec(String key,long num)| setDec("gold",5)| 
-|`where`|¢Ùwhere(String where)<br>¢Úwhere(String where, Object... whereParam)|¢Ùwhere("id=1111 and username='Leytton'")<br> ¢Úwhere("id=? and username=?",1111,"Leytton")
+|`where`|â‘ where(String where)<br>â‘¡where(String where, Object... whereParam)|â‘ where("id=1111 and username='Leytton'")<br> â‘¡where("id=? and username=?",1111,"Leytton")
 |`group`|group(String group)|group("type")
 |`having`|having(String having)|having("id>1234")
 |`order`|order(String order)|order("id desc")
 |`asc`|asc(String key)|asc("id")
 |`desc`|desc(String key)|desc("id")
 |`page`|page(long page, long rows)|page(1,10)
-|`limit`|¢Ùlimit(long rows)<br>¢Úlimit(long offset, long rows)|¢Ùlimit(10)<br>¢Úlimit(1,10)
-|`union`|union(String union,Boolean isAll)|¢Ùunion("select * from user_two where id>1234",false)<br>¢Úunion("select * from user_two where id>1234",true)
+|`limit`|â‘ limit(long rows)<br>â‘¡limit(long offset, long rows)|â‘ limit(10)<br>â‘¡limit(1,10)
+|`union`|union(String union,Boolean isAll)|â‘ union("select * from user_two where id>1234",false)<br>â‘¡union("select * from user_two where id>1234",true)
 
-## 0x04 ²éÑ¯Êı¾İ
+## 0x04 æŸ¥è¯¢æ•°æ®
 
-| ²Ù×÷| ²ÎÊı| ËµÃ÷|
+| æ“ä½œ| å‚æ•°| è¯´æ˜|
 | -------- |--------|--------
 |select|<`T`> List<`T`> select()
-|find|¢Ù<`T`> T find()<br>¢Ú<`T`> T find(Object value)<br>¢Û<`T`> T find(String key, Object value)
-|count|¢Ùlong count()<br>¢Úlong count(String field)
+|find|â‘ <`T`> T find()<br>â‘¡<`T`> T find(Object value)<br>â‘¢<`T`> T find(String key, Object value)
+|count|â‘ long count()<br>â‘¡long count(String field)
 |max|double max(String field)
 |min|double min(String field)
 |avg|double avg(String field)
 |sum|double sum(String field)
 
 ```
-//find²éÑ¯
+//findæŸ¥è¯¢
 //select id,name from jd_user where id>4 order by id asc limit 0,1
 User res = D.M(User.class).field("id,name").where("id>?",4).order("id asc").find();
 
-//find ¸ù¾İid²éÑ¯
+//find æ ¹æ®idæŸ¥è¯¢
 //select * from jd_user where id=3 limit 0,1
 User user = D.M(User.class).find(3);
 
-//find¸ù¾İ×Ö¶Î²éÑ¯
+//findæ ¹æ®å­—æ®µæŸ¥è¯¢
 //select * from jd_user where name='Tom' limit 0,1
 User user=D.M(User.class).fetchSql(true).find("name","Bob");
 
-//where,field¹ıÂË
+//where,fieldè¿‡æ»¤
 //select id,name,weight from jd_user where id>3
 List<User> res = D.M(User.class).field("id,name,weight").where("id>3").select();
 
-//group·Ö×é²éÑ¯
+//groupåˆ†ç»„æŸ¥è¯¢
 //select sex,sum(weight) as weight,avg(age) as age,count(id) as num from jd_user where id>5 group by sex order by sex desc limit 0,10
 res = D.M(User.class).field("sex,sum(weight) as weight,avg(age) as age,count(id) as num").where("id>?",5).group("sex").order("sex desc").page(1, 10).select();
 
-//joinÁª±í²éÑ¯
+//joinè”è¡¨æŸ¥è¯¢
 //select jd_user.id,name,weight,sum(gold) as num from jd_user left join jd_gold on user_id=jd_user.id where jd_user.id>3 group by jd_user.id
 res = D.M(User.class).field("jd_user.id,name,weight,sum(gold) as num").join("left join jd_gold on user_id=jd_user.id").where("jd_user.id>3").group("jd_user.id").select();
 
-//unionÁª±í²éÑ¯
+//unionè”è¡¨æŸ¥è¯¢
 //(select id,name from jd_user where id=4 ) union all (select id,name from jd_user where id<3) union (select id,name from jd_user where id=3)
 res = D.M(User.class).field("id,name").where("id=4").union("select id,name from jd_user where id<3",true)
 	.union("select id,name from jd_user where id=3",false).select();
 
-//Í³¼Æ²éÑ¯
+//ç»Ÿè®¡æŸ¥è¯¢
 long num= new M(User.class).where("id>3").count();
 num= D.M(User.class).fetchSql(true).where("id>3").count("id");
 num= (long) D.M(User.class).fetchSql(false).where("id<0").max("id");
@@ -170,31 +170,31 @@ double avg= D.M(User.class).fetchSql(false).where("id>3").avg("id");
 num= (long) D.M(User.class).where("id>13441").sum("age");
 ```
 
-> Í¨¹ıµ÷ÓÃ`fetchSql(true)`·½·¨£¬¿ÉÒÔ»ñÈ¡µ½ `ThinkJD`²úÉúµÄSQLÓï¾ä(ExceptionĞÎÊ½)²¢ÇÒ²»»áÖ´ĞĞÊı¾İ¿â²Ù×÷¡£
+> é€šè¿‡è°ƒç”¨`fetchSql(true)`æ–¹æ³•ï¼Œå¯ä»¥è·å–åˆ° `ThinkJD`äº§ç”Ÿçš„SQLè¯­å¥(Exceptionå½¢å¼)å¹¶ä¸”ä¸ä¼šæ‰§è¡Œæ•°æ®åº“æ“ä½œã€‚
 ![fetchSql](https://img-blog.csdn.net/2018042023324417)
 
-user±í½á¹¹£º
+userè¡¨ç»“æ„ï¼š
 
-|×Ö¶ÎÃû | Êı¾İÀàĞÍ| ±¸×¢|
+|å­—æ®µå | æ•°æ®ç±»å‹| å¤‡æ³¨|
 |--------|--------|--------
-|id |int | ÓÃ»§id,×ÔÔö³¤Ö÷¼ü
-|name | varchar | ÓÃ»§Ãû
-|age |tinyint|ÄêÁä
-|weight | float | ÌåÖØ
-|sex|tinyint|ĞÔ±ğ 0Å®/1ÄĞ
-|time|int|Ê±¼ä
+|id |int | ç”¨æˆ·id,è‡ªå¢é•¿ä¸»é”®
+|name | varchar | ç”¨æˆ·å
+|age |tinyint|å¹´é¾„
+|weight | float | ä½“é‡
+|sex|tinyint|æ€§åˆ« 0å¥³/1ç”·
+|time|int|æ—¶é—´
 
-`select()`ºÍ `find()`²éÑ¯½á¹û·â×°µ½JavaBeanÀï·µ»Ø£¬JavaBean¿ÉÊ¹ÓÃ×¢½âÓ³ÉäÊı¾İ¿â×Ö¶Î¡£
+`select()`å’Œ `find()`æŸ¥è¯¢ç»“æœå°è£…åˆ°JavaBeané‡Œè¿”å›ï¼ŒJavaBeanå¯ä½¿ç”¨æ³¨è§£æ˜ å°„æ•°æ®åº“å­—æ®µã€‚
 
-> `×¢Òâ:Ç½ÁÑ½¨ÒéJavaBean×Ö¶Î»ù´¡Êı¾İÀàĞÍÊ¹ÓÃ¡¾Integer¡¢Long¡¢Boolean¡¢Float¡¢Double¡¢Byte¡¢Short¡¢Char¡¿²»ÒªÊ¹ÓÃ¡¾integer¡¢long¡¢boolean¡¢float¡¢double¡¢byte¡¢short¡¢char¡¿£¬ÒòÎªÇ°Õß¿ÉÒÔ¸³ÖµÎªnull¶øºóÕß²»ĞĞ(nullÊ±Îª0)£¬ËùÒÔ»ñÈ¡µ½µÄÖµÊÇ²»×¼È·µÄ¡£ThinkJDµÄsave¸üĞÂµÈ²Ù×÷Í¨¹ıÅĞ¶ÏÊôĞÔÖµ²»ÎªnullÔò¼ÓÈëÊı¾İ¿â¸üĞÂ×Ö¶Î¶ÓÁĞ¡£ThinkJD»á×Ô¶¯¼ì²âÒÔÉÏ²»·ûºÏµÄÊı¾İÀàĞÍ²¢·¢³ö¾¯¸æ¡£ÈçĞè¹Ø±Õµ÷ÓÃD.setCheckField(false);`
+> æ³¨æ„:å¢™è£‚å»ºè®®JavaBeanå­—æ®µåŸºç¡€æ•°æ®ç±»å‹ä½¿ç”¨ã€Integerã€Longã€Booleanã€Floatã€Doubleã€Byteã€Shortã€Charã€‘ä¸è¦ä½¿ç”¨ã€integerã€longã€booleanã€floatã€doubleã€byteã€shortã€charã€‘ï¼Œå› ä¸ºå‰è€…å¯ä»¥èµ‹å€¼ä¸ºnullè€Œåè€…ä¸è¡Œ(nullæ—¶ä¸º0)ï¼Œæ‰€ä»¥è·å–åˆ°çš„å€¼æ˜¯ä¸å‡†ç¡®çš„ã€‚ThinkJDçš„saveæ›´æ–°ç­‰æ“ä½œé€šè¿‡åˆ¤æ–­å±æ€§å€¼ä¸ä¸ºnullåˆ™åŠ å…¥æ•°æ®åº“æ›´æ–°å­—æ®µé˜Ÿåˆ—ã€‚ThinkJDä¼šè‡ªåŠ¨æ£€æµ‹ä»¥ä¸Šä¸ç¬¦åˆçš„æ•°æ®ç±»å‹å¹¶å‘å‡ºè­¦å‘Šã€‚å¦‚éœ€å…³é—­è°ƒç”¨D.setCheckField(false);
 
 ```
-//@Table(name="user")Ä¬ÈÏÀàÃûÎª±íÃû,¿É×¢½âÖØ¶¨Òå
+//@Table(name="user")é»˜è®¤ç±»åä¸ºè¡¨å,å¯æ³¨è§£é‡å®šä¹‰
 public class User {
-	//@Column(isKey=true)Ä¬ÈÏidÎªÖ÷¼ü¡¢isAutoInc=true×ÔÔö,¿É×¢½âÖØ¶¨Òå
+	//@Column(isKey=true)é»˜è®¤idä¸ºä¸»é”®ã€isAutoInc=trueè‡ªå¢,å¯æ³¨è§£é‡å®šä¹‰
 	private Long id;
 	private Integer age;
-	//@Column(name="user_name")Ä¬ÈÏÊôĞÔÃûÎª±í×Ö¶Î,¿É×¢½âÖØ¶¨Òå
+	//@Column(name="user_name")é»˜è®¤å±æ€§åä¸ºè¡¨å­—æ®µ,å¯æ³¨è§£é‡å®šä¹‰
 	private String name;
 	private Float weight;
 	private Boolean sex;
@@ -250,24 +250,24 @@ public class User {
 
 ```
 
-## 0x05 ²åÈëÊı¾İ
-| ²Ù×÷| ²ÎÊı| ËµÃ÷|
+## 0x05 æ’å…¥æ•°æ®
+| æ“ä½œ| å‚æ•°| è¯´æ˜|
 | -------- | -------- | --------
-|add|long add()|TableÄ£Ê½Ç°Ìá·½·¨:data()<br>·µ»Ø×Ô¶¯Éú³ÉµÄÖ÷¼üÖµ;
+|add|long add()|Tableæ¨¡å¼å‰ææ–¹æ³•:data()<br>è¿”å›è‡ªåŠ¨ç”Ÿæˆçš„ä¸»é”®å€¼;
 
 ```
-/*Ö¸¶¨²åÈë×Ö¶Î*/
+/*æŒ‡å®šæ’å…¥å­—æ®µ*/
 long id=D.M(User.class).field("name,weight").data("Tom",60).add();
 
-/*²»Ö¸¶¨²åÈë×Ö¶Î£¬°´±í×Ö¶ÎË³Ğò²åÈë*/
+/*ä¸æŒ‡å®šæ’å…¥å­—æ®µï¼ŒæŒ‰è¡¨å­—æ®µé¡ºåºæ’å…¥*/
 id=D.M("user").data(null,"Tom",60,...).add();
 
-/*Ê¹ÓÃjavaBean°ë×Ô¶¯Ä£Ê½£¬×Ô¶¯»ñÈ¡±íÃû¡¢Ö÷¼ü¡¢×Ö¶ÎÃû£¬¸ø¶¨data°´javaBeanÊôĞÔË³Ğò²åÈë,Éú³ÉµÄsqlÓï¾äÈçÏÂ
+/*ä½¿ç”¨javaBeanåŠè‡ªåŠ¨æ¨¡å¼ï¼Œè‡ªåŠ¨è·å–è¡¨åã€ä¸»é”®ã€å­—æ®µåï¼Œç»™å®šdataæŒ‰javaBeanå±æ€§é¡ºåºæ’å…¥,ç”Ÿæˆçš„sqlè¯­å¥å¦‚ä¸‹
  *insert into jd_user (age,name,weight,sex,time) values(?,?,?,...)
  */
 id=D.M(User.class).data("Tom",60,...).add();
 
-//Ê¹ÓÃjavaBeanÈ«×Ô¶¯Ä£Ê½£¬×Ô¶¯»ñÈ¡±íÃû¡¢Ö÷¼ü¡¢×Ö¶ÎÃûºÍÊı¾İ
+//ä½¿ç”¨javaBeanå…¨è‡ªåŠ¨æ¨¡å¼ï¼Œè‡ªåŠ¨è·å–è¡¨åã€ä¸»é”®ã€å­—æ®µåå’Œæ•°æ®
 User user = new User();
 user.setId(5);
 user.setAge(10);
@@ -283,10 +283,10 @@ num=D.M(user).field("name").add();
 num=D.M(user).autoInc(false).add();
 ```
 
-## 0x06 ¸üĞÂÊı¾İ
-| ²Ù×÷| ²ÎÊı|ËµÃ÷|
+## 0x06 æ›´æ–°æ•°æ®
+| æ“ä½œ| å‚æ•°|è¯´æ˜|
 | -------- | -------- | -------- 
-|save|long save()|TableÄ£Ê½Ç°Ìá·½·¨:data(),where();<br>·µ»ØÖ´ĞĞÉúĞ§ĞĞÊı
+|save|long save()|Tableæ¨¡å¼å‰ææ–¹æ³•:data(),where();<br>è¿”å›æ‰§è¡Œç”Ÿæ•ˆè¡Œæ•°
 
 ```
 long num=D.M("user").field("name,weight").data("Mike",100).where("id=?",1234).save();
@@ -305,44 +305,44 @@ num=D.M(user).field("name").save();
 id=D.M(user).autoInc(false).fetchSql(true).where("id=?",user.getId()-1).save();
 ```
 
-## 0x07 É¾³ıÊı¾İ
-| ²Ù×÷| ²ÎÊı|ËµÃ÷|
+## 0x07 åˆ é™¤æ•°æ®
+| æ“ä½œ| å‚æ•°|è¯´æ˜|
 | -------- | -------- | -------- 
-|delete|long delete()|TableÄ£Ê½Ç°Ìá·½·¨:where()<br>·µ»ØÖ´ĞĞÉúĞ§ĞĞÊı
+|delete|long delete()|Tableæ¨¡å¼å‰ææ–¹æ³•:where()<br>è¿”å›æ‰§è¡Œç”Ÿæ•ˆè¡Œæ•°
 
-`×¢£ºÎª·ÀÖ¹ÎóÉ¾³ı£¬whereÌõ¼ş²»ÄÜÎª¿Õ¡£`
+`æ³¨ï¼šä¸ºé˜²æ­¢è¯¯åˆ é™¤ï¼Œwhereæ¡ä»¶ä¸èƒ½ä¸ºç©ºã€‚`
 
 ```
-long num=D.M("user").delete(5);//Ä¬ÈÏÎªid=?
+long num=D.M("user").delete(5);//é»˜è®¤ä¸ºid=?
 num=D.M("user").delete("time",1523681398);//time=?
 num=D.M(User.class).where("id>=?",13421).delete();
 
-//JavaBeanÄ£Ê½
+//JavaBeanæ¨¡å¼
 User user=new User();
 user.setId(10L);
 long num=D.M(user).delete();
 ```
 
-## 0x08 Ö´ĞĞSQL
+## 0x08 æ‰§è¡ŒSQL
 
-| ²Ù×÷| ²ÎÊı|ËµÃ÷| 
+| æ“ä½œ| å‚æ•°|è¯´æ˜| 
 | -------- | -------- | -------- 
-|execute|void execute(String... sqls)|Ö±½ÓÖ´ĞĞSQLÓï¾ä
+|execute|void execute(String... sqls)|ç›´æ¥æ‰§è¡ŒSQLè¯­å¥
 
 ```
 D.M().execute( sql1 [ sql2 , sql3 ... ] );
 ```
 
-## 0x09 ÊÂÎñÖ§³Ö
-Êı¾İ¿â±íÒıÇæÓ¦¸ÃÎªInnoDBÒÔÖ§³ÖÊÂÎñ²Ù×÷¡£
-`´úÂëÊ¾Àı£º`
+## 0x09 äº‹åŠ¡æ”¯æŒ
+æ•°æ®åº“è¡¨å¼•æ“åº”è¯¥ä¸ºInnoDBä»¥æ”¯æŒäº‹åŠ¡æ“ä½œã€‚
+`ä»£ç ç¤ºä¾‹ï¼š`
 
 ```
 Connection conn=null;
 try {
-	//»ñÈ¡ÒÑ¿ªÆôÊÂÎñµÄÊı¾İ¿âÁ¬½Ó
+	//è·å–å·²å¼€å¯äº‹åŠ¡çš„æ•°æ®åº“è¿æ¥
 	conn = D.M().startTrans();
-	//Ê¹ÓÃÊÂÎñÁ¬½Ó²Ù×÷Êı¾İ¿â
+	//ä½¿ç”¨äº‹åŠ¡è¿æ¥æ“ä½œæ•°æ®åº“
 	long id=new M("gold").trans(conn).field("user_id,gold,type,time").data(3,5,0,System.currentTimeMillis()/1000).add();
 	System.out.println(id);
 	if(id>0) {
@@ -350,12 +350,12 @@ try {
 	}
 	id=new M("gold").trans(conn).field("user_id,gold,type,time").data(3,5,0,System.currentTimeMillis()/1000).add();
 	System.out.println(id);
-	//Ìá½»ÊÂÎñ
+	//æäº¤äº‹åŠ¡
 	D.M().commit(conn);
 } catch (SQLException e) {
 	e.printStackTrace();
 	try {
-		//ÊÂÎñ»Ø¹ö
+		//äº‹åŠ¡å›æ»š
 		D.M().rollback(conn);
 	} catch (SQLException e1) {
 		e1.printStackTrace();
@@ -363,9 +363,9 @@ try {
 }
 ```
 
-# 3 Ğí¿ÉÖ¤
+# 3 è®¸å¯è¯
 
 [Apache License 2.0](https://github.com/Leytton/ThinkJD/blob/master/LICENSE) 
 
-# 4 ¹ØÓÚ
-Èç¹ûÏ²»¶µÄ»°£¬Çëµã¸öÔŞÈÃÎÒÖªµÀÅ¶~ÔÚÕÒµ½±ÈËüÓÃµÃ¸üË³ÊÖµÄJDBC¿âÖ®Ç°£¬Õâ¸öÏîÄ¿»á³ÖĞø¸üĞÂ¡£
+# 4 å…³äº
+å¦‚æœå–œæ¬¢çš„è¯ï¼Œè¯·ç‚¹ä¸ªèµè®©æˆ‘çŸ¥é“å“¦~åœ¨æ‰¾åˆ°æ¯”å®ƒç”¨å¾—æ›´é¡ºæ‰‹çš„JDBCåº“ä¹‹å‰ï¼Œè¿™ä¸ªé¡¹ç›®ä¼šæŒç»­æ›´æ–°ã€‚
