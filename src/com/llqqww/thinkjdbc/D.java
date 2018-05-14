@@ -14,7 +14,7 @@ public class D {
 
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.2_10";
+	private static String version="V1.4.3_11";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
@@ -68,6 +68,76 @@ public class D {
 			}
 		}
 		return conn;
+	}
+	
+	public static Connection getTransConnection() throws SQLException{
+		Connection conn=null;
+		try {
+			conn= getConnection();
+			conn.setAutoCommit(false);
+		} catch (SQLException e) {
+			if(conn!=null&&!conn.isClosed()) {
+				conn.setAutoCommit(true);
+				conn.close();
+			}
+			throw e;
+		}
+		return conn;
+	}
+	
+	/**
+	 * 事务提交
+	 * 中途异常关闭conn连接
+	 * @param conn 事务连接
+	 * @throws SQLException if has error
+	 */
+	public static void commit(Connection conn) throws SQLException{
+		try {
+			conn.commit();
+			closeTransConn(conn);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 事务回滚，中途异常关闭conn连接
+	 * @param conn 事务连接
+	 * @throws SQLException if has error
+	 */
+	public static void rollback(Connection conn) throws SQLException{
+		try {
+			conn.rollback();
+			closeTransConn(conn);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+	
+	/**
+	 * 关闭连接,有事务不关闭
+	 * @param conn
+	 * @throws SQLException
+	 */
+	public static void closeConn(Connection conn) throws SQLException{
+		if(conn!=null && !conn.isClosed() && conn.getAutoCommit()) {
+			conn.close();
+		}
+	}
+	
+	/**
+	 * 关闭事务
+	 * @param conn
+	 * @throws SQLException
+	 */
+	public static void closeTransConn(Connection conn) throws SQLException{
+		try {
+			conn.setAutoCommit(true);
+		} catch (SQLException e) {
+			closeConn(conn);
+			throw e;
+		}
+		
 	}
 	
 	public static void setDbConfig(String DbUrl,String DbUser,String DbPassword) throws ClassNotFoundException{
