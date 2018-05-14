@@ -6,13 +6,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)//¸Ã×¢½âÓÃÓÚĞŞÊÎTYPEÔªËØ£¬Ò²¾ÍÊÇĞŞÊÎÀàºÍ½Ó¿ÚµÈÀàĞÍ
-@Retention(RetentionPolicy.RUNTIME)//¸Ã×¢½âĞÅÏ¢ÔËĞĞÊ±±£Áô
-@Documented//¸Ã×¢½â°üº¬ÔÚJavadocÖĞ
+@Target(ElementType.FIELD)//è¯¥æ³¨è§£ç”¨äºä¿®é¥°TYPEå…ƒç´ ï¼Œä¹Ÿå°±æ˜¯ä¿®é¥°ç±»å’Œæ¥å£ç­‰ç±»å‹
+@Retention(RetentionPolicy.RUNTIME)//è¯¥æ³¨è§£ä¿¡æ¯è¿è¡Œæ—¶ä¿ç•™
+@Documented//è¯¥æ³¨è§£åŒ…å«åœ¨Javadocä¸­
 public @interface Column {
 	String name() default "";
 	boolean isKey() default false;
-	boolean isAutoInc() default true;//pkÊÇ·ñ×ÔÔö³¤
+	boolean isAutoInc() default true;//pkæ˜¯å¦è‡ªå¢é•¿
 	boolean isColumn() default true;
-	boolean isCheckField() default true;//ÊÇ·ñÑÏ¸ñ¼ì²éÊı¾İÀàĞÍ
+	boolean isCheckField() default true;//æ˜¯å¦ä¸¥æ ¼æ£€æŸ¥æ•°æ®ç±»å‹
 }

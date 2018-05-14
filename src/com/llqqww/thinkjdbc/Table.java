@@ -6,9 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)//¸Ã×¢½âÓÃÓÚĞŞÊÎTYPEÔªËØ£¬Ò²¾ÍÊÇĞŞÊÎÀàºÍ½Ó¿ÚµÈÀàĞÍ
-@Retention(RetentionPolicy.RUNTIME)//¸Ã×¢½âĞÅÏ¢ÔËĞĞÊ±±£Áô
-@Documented//¸Ã×¢½â°üº¬ÔÚJavadocÖĞ
+@Target(ElementType.TYPE)//è¯¥æ³¨è§£ç”¨äºä¿®é¥°TYPEå…ƒç´ ï¼Œä¹Ÿå°±æ˜¯ä¿®é¥°ç±»å’Œæ¥å£ç­‰ç±»å‹
+@Retention(RetentionPolicy.RUNTIME)//è¯¥æ³¨è§£ä¿¡æ¯è¿è¡Œæ—¶ä¿ç•™
+@Documented//è¯¥æ³¨è§£åŒ…å«åœ¨Javadocä¸­
 public @interface Table {
 	public String name() default "";
 }
