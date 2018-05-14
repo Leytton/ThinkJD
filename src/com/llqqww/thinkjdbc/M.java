@@ -4,10 +4,13 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.dbutils.BasicRowProcessor;
+import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -18,7 +21,7 @@ public class M {
 	
 	private Connection conn = null;
 	private boolean fetchSql = false;
-	private Boolean isPkAutoInc = null;//±ØĞëÎªBoolean
+	private Boolean isPkAutoInc = null;//å¿…é¡»ä¸ºBoolean
 	
 	private String sql;
 	private String pk;
@@ -36,9 +39,10 @@ public class M {
 	private Object[] param_data;
 	private Object bean;
 	private Class<?> beanClass;
-	LinkedHashMap<String, FieldInfo> fieldInfoMap;
 	private boolean isInitedBeanClass;
 	private boolean isNeedDataParam=true;
+	LinkedHashMap<String, FieldInfo> fieldInfoMap;
+	Map<String, String> columnToPropertyOverrides;
 
 	public M(){
 	}
@@ -70,9 +74,13 @@ public class M {
 		return this;
 	}
 	
-	public M trans(Connection conn) {
+	public M conn(Connection conn) {
 		this.conn = conn;
 		return this;
+	}
+	
+	public M trans(Connection conn) throws SQLException {
+		return conn(conn);
 	}
 	
 	public M fetchSql(boolean fetchSql) {
@@ -211,27 +219,27 @@ public class M {
 		return select();
 	}
 	
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	public <T> List<T> select() throws SQLException{
 		try {
 			if (buildSql_Select()) {
-				List<T> beanList = new QueryRunner().query(conn, sql, new BeanListHandler<T>((Class<T>) beanClass),param_where);
+				BeanListHandler<T> beanListHandler= new BeanListHandler<T>((Class<T>) this.beanClass,new BasicRowProcessor(new BeanProcessor(columnToPropertyOverrides)));
+				List<T> beanList = new QueryRunner().query(conn, sql,beanListHandler,param_where);
 				return beanList;
 			}
 		} catch (SQLException e) {
-			this.close();
+			D.closeConn(conn);
 			throw e;
 		}
 		return null;
 	}
 
 	/**
-	 * ²éÑ¯Ò»ÌõÊı¾İ,Ä¬ÈÏ²Î¿¼×Ö¶ÎÎªid.¿É´îÅäpage,limit,order,group,havingÊ¹ÓÃ
+	 * æŸ¥è¯¢ä¸€æ¡æ•°æ®,é»˜è®¤å‚è€ƒå­—æ®µä¸ºid.å¯æ­é…page,limit,order,group,havingä½¿ç”¨
 	 * 
-	 * @param type
-	 * @param id
-	 * @return
-	 * @throws SQLException
+	 * @param value é€šè¿‡pk=valueæŸ¥è¯¢
+	 * @return è¿”å›javabean
+	 * @throws SQLException if has error
 	 */
 	public <T> T find(Object value) throws SQLException {
 		this.pk=null!=this.pk?this.pk:D.getPk();
@@ -239,13 +247,12 @@ public class M {
 	}
 
 	/**
-	 * ²éÑ¯Ò»ÌõÊı¾İ,×Ô¶¨Òå²Î¿¼×Ö¶Î.¿É´îÅäpage,limit,order,group,havingÊ¹ÓÃ
+	 * æŸ¥è¯¢ä¸€æ¡æ•°æ®,è‡ªå®šä¹‰å‚è€ƒå­—æ®µ.å¯æ­é…page,limit,order,group,havingä½¿ç”¨
 	 * 
-	 * @param type
-	 * @param key
-	 * @param value
-	 * @return
-	 * @throws SQLException
+	 * @param key é€šè¿‡key=valueæŸ¥è¯¢
+	 * @param value é€šè¿‡key=valueæŸ¥è¯¢
+	 * @return è¿”å›javabean
+	 * @throws SQLException if has error
 	 */
 	public <T> T find(String key, Object value) throws SQLException {
 		this.where(key + "=?", value);
@@ -253,23 +260,23 @@ public class M {
 	}
 
 	/**
-	 * ²éÑ¯Ò»ÌõÊı¾İ,¿É´îÅäpage,limit,order,group,havingÊ¹ÓÃ
+	 * æŸ¥è¯¢ä¸€æ¡æ•°æ®,å¯æ­é…page,limit,order,group,havingä½¿ç”¨
 	 * 
-	 * @param type
-	 * @return
-	 * @throws SQLException
+	 * @return è¿”å›javabean
+	 * @throws SQLException if has error
 	 */
 	@SuppressWarnings("unchecked") 
 	public <T> T find() throws SQLException{
 		this.limit(1);
 		try {
 			if (buildSql_Select()) {
-				T bean = new QueryRunner().query(conn, sql, new BeanHandler<T>((Class<T>) this.beanClass), param_where);
-				this.close();
+				BeanHandler<T> beanHandler= new BeanHandler<T>((Class<T>) this.beanClass,new BasicRowProcessor(new BeanProcessor(columnToPropertyOverrides)));
+				T bean = new QueryRunner().query(conn, sql,beanHandler, param_where);
+				D.closeConn(conn);
 				return bean;
 			}
 		} catch (SQLException e) {
-			this.close();
+			D.closeConn(conn);
 			throw e;
 		}
 		return null;
@@ -307,11 +314,11 @@ public class M {
 				if(null!=result_insert && result_insert.containsKey("GENERATED_KEY")) {
 					id = (long) result_insert.get("GENERATED_KEY");
 				}
-				close();
+				D.closeConn(conn);
 				return id;
 			}
 		} catch (SQLException e) {
-			close();
+			D.closeConn(conn);
 			throw e;
 		}
 		return 0;
@@ -329,22 +336,22 @@ public class M {
 					params[obj_index++] = object;
 				}
 				long num = new QueryRunner().update(conn, sql, params);
-				close();
+				D.closeConn(conn);
 				return num;
 			}
 		} catch (SQLException e) {
-			close();
+			D.closeConn(conn);
 			throw e;
 		}
 		return 0;
 	}
 	
 	/**
-	 * É¾³ıÊı¾İ,Ä¬ÈÏ²Î¿¼×Ö¶ÎÎªid.¿É´îÅäpage,limit,orderÊ¹ÓÃ
+	 * åˆ é™¤æ•°æ®,é»˜è®¤å‚è€ƒå­—æ®µä¸ºid.å¯æ­é…page,limit,orderä½¿ç”¨
 	 * 
-	 * @param id
-	 * @return
-	 * @throws SQLException
+	 * @param value æ ¹æ®pk=valueåˆ é™¤
+	 * @return è¿”å›åˆ é™¤æ•°æ®æ¡æ•°
+	 * @throws SQLException if has error
 	 */
 	public long delete(Object value) throws SQLException {
 		this.pk=null!=this.pk?this.pk:D.getPk();
@@ -352,12 +359,12 @@ public class M {
 	}
 
 	/**
-	 * É¾³ıÊı¾İ,×Ô¶¨ÒåÉ¾³ı²Î¿¼×Ö¶Î.¿É´îÅäpage,limit,orderÊ¹ÓÃ
+	 * åˆ é™¤æ•°æ®,è‡ªå®šä¹‰åˆ é™¤å‚è€ƒå­—æ®µ.å¯æ­é…page,limit,orderä½¿ç”¨
 	 * 
-	 * @param key
-	 * @param value
-	 * @return
-	 * @throws SQLException
+	 * @param key æ ¹æ®key=valueåˆ é™¤
+	 * @param value æ ¹æ®key=valueåˆ é™¤
+	 * @return è¿”å›åˆ é™¤æ•°æ®æ¡æ•°
+	 * @throws SQLException if has error
 	 */
 	public long delete(String key, Object value) throws SQLException {
 		this.where = "where " + key + "=?";
@@ -367,22 +374,22 @@ public class M {
 	}
 
 	/**
-	 * É¾³ıÊı¾İ,²Î¿¼ÎªwhereÓï¾ä.¿É´îÅäpage,limit,orderÊ¹ÓÃ
+	 * åˆ é™¤æ•°æ®,å‚è€ƒä¸ºwhereè¯­å¥.å¯æ­é…page,limit,orderä½¿ç”¨
 	 * 
-	 * @return
-	 * @throws SQLException
+	 * @return è¿”å›åˆ é™¤æ•°æ®æ¡æ•°
+	 * @throws SQLException if has error
 	 */
 	public long delete() throws SQLException {
 		try {
 			if(buildSql_Delete()) {
 				int result_delete = new QueryRunner().update(conn, sql, param_where);
-				this.close();
+				D.closeConn(conn);
 				return result_delete;
 			}else{
 				return 0;
 			}
 		}catch (SQLException e) {
-			close();
+			D.closeConn(conn);
 			throw e;
 		}
 	}
@@ -400,81 +407,63 @@ public class M {
 			if (null != stmt && !stmt.isClosed()) {
 				stmt.close();
 			}
-			close();
+			D.closeConn(conn);
 		} catch (SQLException e) {
-			close();
+			D.closeConn(conn);
 			throw e;
 		}
 	}
 	
 	/**
-	 * »ñÈ¡Ä³¸ö×Ö¶ÎÖµ
-	 * @param field
-	 * @return
-	 * @throws SQLException
+	 * è·å–æŸä¸ªå­—æ®µå€¼
+	 * @param field è·å–fieldå­—æ®µæ•°æ®
+	 * @return è¿”å›å­—æ®µæ•°æ®
+	 * @throws SQLException if has error
 	 */
 	public String getField(String field) throws SQLException{
 		this.field(field);
 		try {
 			if (buildSql_Select()) {
 				Object res = new QueryRunner().query(conn, sql, new ScalarHandler<Object>(), param_where);
-				close();
+				D.closeConn(conn);
 				if (null != res) {
 					return res.toString();
 				}
 			}
 		} catch (SQLException e) {
-			close();
+			D.closeConn(conn);
 			throw e;
 		}
 		return null;
 	}
 	
 	/**
-	 * ¿ªÆôÊÂÎñ,·µ»Øconn,ºóĞø²Ù×÷M("table").conn(conn)´«Èë´ËconnÊÂÎñ²ÅÓĞĞ§
-	 * ÖĞÍ¾Òì³£¹Ø±ÕconnÁ¬½Ó
-	 * @return Connection
-	 * @throws SQLException
+	 * å¼€å¯äº‹åŠ¡,è¿”å›conn,åç»­æ“ä½œM("table").conn(conn)ä¼ å…¥æ­¤connäº‹åŠ¡æ‰æœ‰æ•ˆ
+	 * ä¸­é€”å¼‚å¸¸å…³é—­connè¿æ¥
+	 * @return Connection è¿”å›äº‹åŠ¡è¿æ¥
+	 * @throws SQLException if has error
 	 */
 	public Connection startTrans() throws SQLException{
-		try {
-			initDB();
-			conn.setAutoCommit(false);
-		} catch (SQLException e) {
-			close(true);
-			throw e;
-		}
-		return conn;
+		return D.getTransConnection();
 	}
 	
 	/**
-	 * ÊÂÎñÌá½»
-	 * ÖĞÍ¾Òì³£¹Ø±ÕconnÁ¬½Ó
-	 * @throws SQLException
+	 * äº‹åŠ¡æäº¤
+	 * ä¸­é€”å¼‚å¸¸å…³é—­connè¿æ¥
+	 * @param conn äº‹åŠ¡è¿æ¥
+	 * @throws SQLException if has error
 	 */
 	public void commit(Connection conn) throws SQLException{
-		this.conn=conn;
-		try {
-			conn.commit();
-			close(true);
-		} catch (SQLException e) {
-			close(true);
-			throw e;
-		}
+		D.commit(conn);
 	}
 	
 	/**
-	 * ÊÂÎñ»Ø¹ö£¬ÖĞÍ¾Òì³£¹Ø±ÕconnÁ¬½Ó
-	 * @throws SQLException
+	 * äº‹åŠ¡å›æ»šï¼Œä¸­é€”å¼‚å¸¸å…³é—­connè¿æ¥
+	 * @param conn äº‹åŠ¡è¿æ¥
+	 * @throws SQLException if has error
 	 */
 	public void rollback(Connection conn) throws SQLException{
-		this.conn=conn;
-		try {
-			conn.rollback();
-		} catch (SQLException e) {
-			close(true);
-			throw e;
-		}
+		D.rollback(conn);
 	}
 	
 	private double getTjNum(String field) throws SQLException {
@@ -489,8 +478,8 @@ public class M {
 	
 	private boolean buildSql_Select() throws SQLException {
 		if(null!=fieldInfoMap) {
-			//whereÓï¾äÖ»ÌáÈ¡×Ö¶ÎĞÅÏ¢
-			if(null==this.field) {//Ã»Ö¸¶¨field
+			//whereè¯­å¥åªæå–å­—æ®µä¿¡æ¯
+			if(null==this.field) {//æ²¡æŒ‡å®šfield
 				for (String key : fieldInfoMap.keySet()) {
 					if(null==this.field) {
 						this.field=key;
@@ -499,7 +488,7 @@ public class M {
 					}
 				}
 			}
-			//Ã»Ö¸¶¨whereÔòÌáÈ¡Ö÷¼üºÍÖµ¹¹ÔìwhereÓï¾ä
+			//æ²¡æŒ‡å®šwhereåˆ™æå–ä¸»é”®å’Œå€¼æ„é€ whereè¯­å¥
 			if(null==this.where && null!=this.pk) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo && null!=fieldInfo.getValueObj()) {
@@ -527,7 +516,7 @@ public class M {
 
 	private boolean buildSql_Delete() throws SQLException {
 		if(null!=fieldInfoMap) {
-			//Ã»Ö¸¶¨whereÔòÌáÈ¡Ö÷¼üºÍÖµ¹¹ÔìwhereÓï¾ä
+			//æ²¡æŒ‡å®šwhereåˆ™æå–ä¸»é”®å’Œå€¼æ„é€ whereè¯­å¥
 			if(null==this.where) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo && null!=fieldInfo.getValueObj()) {
@@ -548,13 +537,13 @@ public class M {
 
 	private boolean buildSql_Insert() throws SQLException {
 		if(null!=fieldInfoMap) {
-			//insertÓï¾äÌáÈ¡×Ö¶ÎºÍÊı¾İ,ÒÔ¼°ÅĞ¶ÏÖ÷¼üÊÇ·ñ×ÔÔö
+			//insertè¯­å¥æå–å­—æ®µå’Œæ•°æ®,ä»¥åŠåˆ¤æ–­ä¸»é”®æ˜¯å¦è‡ªå¢
 			
-			//°üº¬Ö÷¼üÇÒ×ÔÔö
+			//åŒ…å«ä¸»é”®ä¸”è‡ªå¢
 			if(null!=this.pk) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo) {
-					//A:ÓÃ»§ÉèÖÃ>×¢ÊÍ>DÅäÖÃ
+					//A:ç”¨æˆ·è®¾ç½®>æ³¨é‡Š>Dé…ç½®
 					boolean autoInc= null!=this.isPkAutoInc?this.isPkAutoInc:(null!=fieldInfo.isAutoInc()?fieldInfo.isAutoInc():D.isPkAutoInc());
 					if(autoInc) {
 						fieldInfoMap.remove(this.pk);
@@ -585,17 +574,17 @@ public class M {
 
 	private boolean buildSql_Update() throws SQLException {
 		if(null!=fieldInfoMap) {
-			//updateÓï¾äÌáÈ¡×Ö¶ÎºÍÊı¾İ,ÒÔ¼°ÅĞ¶ÏÖ÷¼üÊÇ·ñ×ÔÔö
-			//°üº¬Ö÷¼üÇÒ×ÔÔö
+			//updateè¯­å¥æå–å­—æ®µå’Œæ•°æ®,ä»¥åŠåˆ¤æ–­ä¸»é”®æ˜¯å¦è‡ªå¢
+			//åŒ…å«ä¸»é”®ä¸”è‡ªå¢
 			if(null!=this.pk) {
 				FieldInfo fieldInfo=fieldInfoMap.get(this.pk);
 				if(null!=fieldInfo) {
-					//A:ÓÃ»§ÉèÖÃ>×¢ÊÍ>DÅäÖÃ
+					//A:ç”¨æˆ·è®¾ç½®>æ³¨é‡Š>Dé…ç½®
 					boolean autoInc= null!=this.isPkAutoInc?this.isPkAutoInc:(null!=fieldInfo.isAutoInc()?fieldInfo.isAutoInc():D.isPkAutoInc());
 					if(autoInc) {
 						fieldInfoMap.remove(this.pk);
 					}
-					//Ã»Ö¸¶¨whereÔòÌáÈ¡Ö÷¼üºÍÖµ¹¹ÔìwhereÓï¾ä
+					//æ²¡æŒ‡å®šwhereåˆ™æå–ä¸»é”®å’Œå€¼æ„é€ whereè¯­å¥
 					if(null==this.where && null!=fieldInfo.getValueObj()) {
 						this.where(this.pk+"=?",fieldInfo.getValueObj());
 					}
@@ -616,7 +605,7 @@ public class M {
 		String[] fileds = field.split(",");
 		String setSql = "";
 		int filed_index = 0;
-		//°üº¬"="ºÅµÄ×Ö¶Î±íÊ¾ÄÚ²¿ÓĞ±í´ïÊ½,ÎŞĞè¹¹Ôìkey=?
+		//åŒ…å«"="å·çš„å­—æ®µè¡¨ç¤ºå†…éƒ¨æœ‰è¡¨è¾¾å¼,æ— éœ€æ„é€ key=?
 		for (; filed_index < fileds.length - 1; filed_index++) {
 			setSql += fileds[filed_index] + (fileds[filed_index].contains("=")?",":"=?,");
 		}
@@ -632,7 +621,7 @@ public class M {
 	private boolean doFetchSql() throws SQLException {
 		sql = sql.replaceAll(" +", " ").trim().toLowerCase();
 		if (fetchSql) {
-			this.close();
+			D.closeConn(conn);
 			String params="Params[";
 			if(null!=param_data && (sql.contains("insert") || sql.contains("update")) ) {
 				for (Object object : param_data) {
@@ -659,12 +648,12 @@ public class M {
 				}
 			}
 			params+="]";
-			String msg ="¨X¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T\r\n"
-					+	"¨USQL debuging and you'll get a invalid return value !!!\r\n" 
-					+	"¨U" + sql + "\r\n"
-					+	"¨U" +params+ "\r\n"
-					+	"¨UBy ThinkJDBC " + D.getVersion() + "\r\n"
-					+	"¨^¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T¨T";
+			String msg ="â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•\r\n"
+					+	"â•‘SQL debuging and you'll get a invalid return value !!!\r\n" 
+					+	"â•‘" + sql + "\r\n"
+					+	"â•‘" +params+ "\r\n"
+					+	"â•‘By ThinkJDBC " + D.getVersion() + "\r\n"
+					+	"â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•";
 			try {
 				throw new Exception("\r\n" + msg);
 			} catch (Exception e) {
@@ -702,34 +691,35 @@ public class M {
 			isInitedBeanClass=true;
 		}
 		if(null!=bean) {
-			beanClass=bean.getClass();//»ñÈ¡ÀàĞÅÏ¢
+			beanClass=bean.getClass();//è·å–ç±»ä¿¡æ¯
 		}
 		if(null==beanClass) {
 			return;
 		}
 		if(null==table) {
-			//»ñÈ¡±íÃû
-			if(beanClass.isAnnotationPresent(Table.class)){//ÅĞ¶ÏuserClassÊÇ·ñÊ¹ÓÃÁËTable×¢½â
-	            Table tableAnnotation=(Table)beanClass.getAnnotation(Table.class);//»ñÈ¡×¢½âĞÅÏ¢
+			//è·å–è¡¨å
+			if(beanClass.isAnnotationPresent(Table.class)){//åˆ¤æ–­userClassæ˜¯å¦ä½¿ç”¨äº†Tableæ³¨è§£
+	            Table tableAnnotation=(Table)beanClass.getAnnotation(Table.class);//è·å–æ³¨è§£ä¿¡æ¯
 	            table(tableAnnotation.name());
 	        }else {
 	        	table(beanClass.getSimpleName());
 	        }
 		}
 		
-		//»ñÈ¡×Ö¶Î[ºÍbeanÊı¾İ]
+		//è·å–å­—æ®µ[å’Œbeanæ•°æ®]
 		String annoKeyField=null;
 		
 		fieldInfoMap=new LinkedHashMap<>();
-		Field[] fields = beanClass.getDeclaredFields();//»ñÈ¡update»òadd×Ö¶Î
-		for(Field field:fields){//±éÀúÊôĞÔ
+		columnToPropertyOverrides= new HashMap<String, String>();
+		Field[] fields = beanClass.getDeclaredFields();//è·å–updateæˆ–addå­—æ®µ
+		for(Field field:fields){//éå†å±æ€§
         	field.setAccessible(true);
         	FieldInfo fiedInfo= new FieldInfo();
-        	fiedInfo.setName(field.getName());//Ä¬ÈÏ×Ö¶ÎÃû
+        	fiedInfo.setName(field.getName());//é»˜è®¤å­—æ®µå
         	boolean isCheckField=D.isCheckField();
-        	if(field.isAnnotationPresent(Column.class)){//¾ß±¸Column×¢½â,Ôò¶ÁÈ¡×¢½â
-        		Column column=(Column)field.getAnnotation(Column.class);//»ñÈ¡×¢½âĞÅÏ¢
-        		if(!column.isColumn()) {//Èç¹û×¢½âÁËisColumn=falseÔòºöÂÔ´Ë×Ö¶Î//System.out.println("×¢½âºöÂÔ×Ö¶Î:"+field.getName());
+        	if(field.isAnnotationPresent(Column.class)){//å…·å¤‡Columnæ³¨è§£,åˆ™è¯»å–æ³¨è§£
+        		Column column=(Column)field.getAnnotation(Column.class);//è·å–æ³¨è§£ä¿¡æ¯
+        		if(!column.isColumn()) {//å¦‚æœæ³¨è§£äº†isColumn=falseåˆ™å¿½ç•¥æ­¤å­—æ®µ//System.out.println("æ³¨è§£å¿½ç•¥å­—æ®µ:"+field.getName());
         			fiedInfo.setColumn(false);
         			continue;
         		}
@@ -737,12 +727,13 @@ public class M {
         			isCheckField=column.isCheckField();
         		}
         		
-                if(!column.name().equals("")){ //Èç¹ûÃ»ÓĞ×¢½â×Ö¶ÎÃûÔòÓÃ±äÁ¿Ãû
+                if(!column.name().equals("")){ //å¦‚æœæ³¨è§£äº†å­—æ®µå
+                	columnToPropertyOverrides.put(column.name(), field.getName());
                 	fiedInfo.setName(column.name());
                 }
                 if(column.isKey()) {
                 	annoKeyField=fiedInfo.getName();
-                	fiedInfo.setKey(column.isKey());//Èç¹ûÊÇ¹Ø¼ü×Ö¶Î,Ôò¼ÇÂ¼ÏÂÀ´ÓÃÓÚupdate²Ù×÷where¹ıÂË
+                	fiedInfo.setKey(column.isKey());//å¦‚æœæ˜¯å…³é”®å­—æ®µ,åˆ™è®°å½•ä¸‹æ¥ç”¨äºupdateæ“ä½œwhereè¿‡æ»¤
                     fiedInfo.setAutoInc(column.isAutoInc());
                 }
             }
@@ -750,10 +741,10 @@ public class M {
 				checkField(field);
 			}
         	try {
-        		if(fiedInfo.isColumn()) {//Ö»ÒªÃ»±¸×¢²»ÊÇColumnÇÒ²»ÎªnullµÄ¶¼¼ÓÈëÖµ
-        			if(null!=bean) {//Èç¹ûbeanÎªnull,¼´classÄ£Ê½
+        		if(fiedInfo.isColumn()) {//åªè¦æ²¡å¤‡æ³¨ä¸æ˜¯Columnä¸”ä¸ä¸ºnullçš„éƒ½åŠ å…¥å€¼
+        			if(null!=bean) {//å¦‚æœbeanä¸ºnull,å³classæ¨¡å¼
         				Object obj=field.get(bean);
-        				if(null==obj) {//System.out.println("¿ÕÖµºöÂÔ×Ö¶Î:"+field.getName());
+        				if(null==obj) {//System.out.println("ç©ºå€¼å¿½ç•¥å­—æ®µ:"+field.getName());
         					continue;
         				}
         				fiedInfo.setValueObj(obj);
@@ -768,14 +759,14 @@ public class M {
         	
         }
 		
-		//»ñÈ¡Ö÷¼ü
-		if(null!=this.pk) {//ÓÃ»§×Ô¶¨ÒåÖ÷¼ü
-			if(fieldInfoMap.containsKey(this.pk)) {//Èç¹û°üº¬¸ÃÖ÷¼ü
+		//è·å–ä¸»é”®
+		if(null!=this.pk) {//ç”¨æˆ·è‡ªå®šä¹‰ä¸»é”®
+			if(fieldInfoMap.containsKey(this.pk)) {//å¦‚æœåŒ…å«è¯¥ä¸»é”®
 			}
-		}else if(null!=annoKeyField) {//ÓÃ»§Ã»¶¨ÒåÖ÷¼ü£¬×¢½âÖ÷¼ü
+		}else if(null!=annoKeyField) {//ç”¨æˆ·æ²¡å®šä¹‰ä¸»é”®ï¼Œæ³¨è§£ä¸»é”®
 			this.pk=annoKeyField;
 		}else {//D.pk
-			if(fieldInfoMap.containsKey(D.getPk())) {//Èç¹û°üº¬¸ÃÖ÷¼ü
+			if(fieldInfoMap.containsKey(D.getPk())) {//å¦‚æœåŒ…å«è¯¥ä¸»é”®
 				this.pk=D.getPk();
 			}
 		}
@@ -783,9 +774,9 @@ public class M {
 	
 	private void initFieldData() {
 		Integer obj_index = null;
-		//Ã»×Ô¶¨Òå×Ö¶Î¾ÍÊ¹ÓÃbeanÀïÃæµÄ
+		//æ²¡è‡ªå®šä¹‰å­—æ®µå°±ä½¿ç”¨beané‡Œé¢çš„
 		if(null==this.field) {
-			//Ã»¶¨ÒåÊı¾İ¾ÍÓÃbeanÀïÃæµÄ
+			//æ²¡å®šä¹‰æ•°æ®å°±ç”¨beané‡Œé¢çš„
 			if(null==this.param_data && null!=bean) {
 				obj_index=0;
 				this.param_data = new Object[fieldInfoMap.size()];
@@ -800,12 +791,12 @@ public class M {
 					this.param_data[obj_index++]=fieldInfoMap.get(key).getValueObj();
 				}
 			}
-		}else {//Èç¹ûÖ¸¶¨ÁËfield,È´Ã»Ö¸¶¨data,ÔòÌáÈ¡³öÊı¾İ
+		}else {//å¦‚æœæŒ‡å®šäº†field,å´æ²¡æŒ‡å®šdata,åˆ™æå–å‡ºæ•°æ®
 			if(null==this.param_data && null!=bean) {
 				obj_index=0;
 				String[] fileds = field.split(",");
 				this.param_data = new Object[fileds.length];
-				//°üº¬"="ºÅµÄ×Ö¶Î±íÊ¾ÄÚ²¿ÓĞ±í´ïÊ½,ÎŞĞè¹¹Ôìkey=?
+				//åŒ…å«"="å·çš„å­—æ®µè¡¨ç¤ºå†…éƒ¨æœ‰è¡¨è¾¾å¼,æ— éœ€æ„é€ key=?
 				for (String field : fileds) {
 					if(fieldInfoMap.containsKey(field)) {
 						Object filedData=fieldInfoMap.get(field).getValueObj();
@@ -852,30 +843,9 @@ public class M {
 		}
 		if(null!=correctType) {
 			String fieldName=field.getDeclaringClass().getName()+"."+field.getName();
-//			System.err.printf("¾¯¸æ!!! ×Ö¶Î%s, ½¨ÒéÊ¹ÓÃÀàĞÍ:%s->%s\r\n",fieldName,fieldType,correctType);
+//			System.err.printf("è­¦å‘Š!!! å­—æ®µ%s, å»ºè®®ä½¿ç”¨ç±»å‹:%s->%s\r\n",fieldName,fieldType,correctType);
 			System.err.printf("Warning!!! Field %s, recommended Type:%s->%s\r\n",fieldName,fieldType,correctType);
-			System.err.println("ÏêÇéÇë·ÃÎÊ(More to see) https://github.com/Leytton/ThinkJD");
-		}
-	}
-
-	private void close() throws SQLException {
-		close(false);
-	}
-	
-	/**
-	 * Ç¿ĞĞ¹Ø±Õ(²»¹ÜÓĞÃ»ÓĞÊÂÎñ)
-	 * @param isForce
-	 * @throws SQLException
-	 */
-	private void close(boolean isEndTrans) throws SQLException {
-		if (null != conn && !conn.isClosed()) {
-			if(isEndTrans) {
-				conn.setAutoCommit(true);//¹Ø±ÕÊÂÎñ
-				conn.close();
-			}else if(conn.getAutoCommit()){
-				conn.close();
-			}
-			//Èç¹û¿ªÆôÊÂÎñÔòÔİÊ±²»¹Ø±Õ
+			System.err.println("è¯¦æƒ…è¯·è®¿é—®(More to see) https://github.com/Leytton/ThinkJD");
 		}
 	}
 }
