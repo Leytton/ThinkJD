@@ -11,13 +11,14 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 public class D {
-
+	
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.3_11";
+	private static String version="V1.4.4_12";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
+	private static boolean isAutoClose=true;
 	private static boolean checkField=true;
 	
 	static{
@@ -70,16 +71,18 @@ public class D {
 		return conn;
 	}
 	
+	/**
+	 * 获取事务连接
+	 * @return Connection 返回事务连接
+	 * @throws SQLException 获取失败或设置为事务失败时关闭连接并抛异常
+	 */
 	public static Connection getTransConnection() throws SQLException{
 		Connection conn=null;
 		try {
 			conn= getConnection();
 			conn.setAutoCommit(false);
 		} catch (SQLException e) {
-			if(conn!=null&&!conn.isClosed()) {
-				conn.setAutoCommit(true);
-				conn.close();
-			}
+			closeConn(conn);
 			throw e;
 		}
 		return conn;
@@ -92,11 +95,16 @@ public class D {
 	 * @throws SQLException if has error
 	 */
 	public static void commit(Connection conn) throws SQLException{
+		SQLException ex = null;
 		try {
 			conn.commit();
-			closeTransConn(conn);
 		} catch (SQLException e) {
-			throw e;
+			ex=e;
+		}finally {
+			autoCloseTransConn(conn);
+			if(null!=ex) {
+				throw ex;
+			}
 		}
 	}
 	
@@ -106,11 +114,16 @@ public class D {
 	 * @throws SQLException if has error
 	 */
 	public static void rollback(Connection conn) throws SQLException{
+		SQLException ex = null;
 		try {
 			conn.rollback();
-			closeTransConn(conn);
 		} catch (SQLException e) {
-			throw e;
+			ex=e;
+		}finally {
+			autoCloseTransConn(conn);
+			if(null!=ex) {
+				throw ex;
+			}
 		}
 	}
 	
@@ -120,29 +133,35 @@ public class D {
 	 * @throws SQLException
 	 */
 	public static void closeConn(Connection conn) throws SQLException{
-		if(conn!=null && !conn.isClosed() && conn.getAutoCommit()) {
+		if(conn!=null && !conn.isClosed()) {
 			conn.close();
 		}
 	}
 	
 	/**
-	 * 关闭事务
+	 * 关闭连接,有事务不关闭
 	 * @param conn
 	 * @throws SQLException
 	 */
-	public static void closeTransConn(Connection conn) throws SQLException{
-		try {
-			conn.setAutoCommit(true);
-		} catch (SQLException e) {
-			closeConn(conn);
-			throw e;
+	protected static void autoCloseConn(Connection conn) throws SQLException{
+		if(D.isAutoClose() && conn.getAutoCommit()) {
+			D.closeConn(conn);
 		}
-		
+	}
+	
+	/**
+	 * 关闭事务连接
+	 * @param conn
+	 * @throws SQLException
+	 */
+	protected static void autoCloseTransConn(Connection conn) throws SQLException{
+		if(D.isAutoClose()) {
+			D.closeConn(conn);
+		}
 	}
 	
 	public static void setDbConfig(String DbUrl,String DbUser,String DbPassword) throws ClassNotFoundException{
-		D.dbConfig = new DbConfig(DbUrl,DbUser,DbPassword);
-		Class.forName(dbConfig.getDriverName());
+		setDbConfig(new DbConfig(DbUrl,DbUser,DbPassword));
 	}
 	
 	public static void setDbConfig(DbConfig dbConfig) throws ClassNotFoundException{
@@ -168,6 +187,14 @@ public class D {
 
 	public static void setTablePrefix(String tablePrefix) {
 		TablePrefix = tablePrefix;
+	}
+	
+	public static boolean isAutoClose() {
+		return isAutoClose;
+	}
+
+	public static void setAutoClose(boolean isAutoClose) {
+		D.isAutoClose = isAutoClose;
 	}
 
 	public static boolean isCheckField() {

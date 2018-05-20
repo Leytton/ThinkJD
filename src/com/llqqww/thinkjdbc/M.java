@@ -225,6 +225,7 @@ public class M {
 			if (buildSql_Select()) {
 				BeanListHandler<T> beanListHandler= new BeanListHandler<T>((Class<T>) this.beanClass,new BasicRowProcessor(new BeanProcessor(columnToPropertyOverrides)));
 				List<T> beanList = new QueryRunner().query(conn, sql,beanListHandler,param_where);
+				D.autoCloseConn(conn);
 				return beanList;
 			}
 		} catch (SQLException e) {
@@ -272,7 +273,7 @@ public class M {
 			if (buildSql_Select()) {
 				BeanHandler<T> beanHandler= new BeanHandler<T>((Class<T>) this.beanClass,new BasicRowProcessor(new BeanProcessor(columnToPropertyOverrides)));
 				T bean = new QueryRunner().query(conn, sql,beanHandler, param_where);
-				D.closeConn(conn);
+				D.autoCloseConn(conn);
 				return bean;
 			}
 		} catch (SQLException e) {
@@ -314,7 +315,7 @@ public class M {
 				if(null!=result_insert && result_insert.containsKey("GENERATED_KEY")) {
 					id = (long) result_insert.get("GENERATED_KEY");
 				}
-				D.closeConn(conn);
+				D.autoCloseConn(conn);
 				return id;
 			}
 		} catch (SQLException e) {
@@ -336,7 +337,7 @@ public class M {
 					params[obj_index++] = object;
 				}
 				long num = new QueryRunner().update(conn, sql, params);
-				D.closeConn(conn);
+				D.autoCloseConn(conn);
 				return num;
 			}
 		} catch (SQLException e) {
@@ -383,7 +384,7 @@ public class M {
 		try {
 			if(buildSql_Delete()) {
 				int result_delete = new QueryRunner().update(conn, sql, param_where);
-				D.closeConn(conn);
+				D.autoCloseConn(conn);
 				return result_delete;
 			}else{
 				return 0;
@@ -407,7 +408,7 @@ public class M {
 			if (null != stmt && !stmt.isClosed()) {
 				stmt.close();
 			}
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 		} catch (SQLException e) {
 			D.closeConn(conn);
 			throw e;
@@ -425,7 +426,7 @@ public class M {
 		try {
 			if (buildSql_Select()) {
 				Object res = new QueryRunner().query(conn, sql, new ScalarHandler<Object>(), param_where);
-				D.closeConn(conn);
+				D.autoCloseConn(conn);
 				if (null != res) {
 					return res.toString();
 				}
@@ -439,7 +440,6 @@ public class M {
 	
 	/**
 	 * 开启事务,返回conn,后续操作M("table").conn(conn)传入此conn事务才有效
-	 * 中途异常关闭conn连接
 	 * @return Connection 返回事务连接
 	 * @throws SQLException if has error
 	 */
@@ -621,7 +621,7 @@ public class M {
 	private boolean doFetchSql() throws SQLException {
 		sql = sql.replaceAll(" +", " ").trim().toLowerCase();
 		if (fetchSql) {
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 			String params="Params[";
 			if(null!=param_data && (sql.contains("insert") || sql.contains("update")) ) {
 				for (Object object : param_data) {
@@ -848,4 +848,5 @@ public class M {
 			System.err.println("详情请访问(More to see) https://github.com/Leytton/ThinkJD");
 		}
 	}
+	
 }
