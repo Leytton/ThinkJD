@@ -1,12 +1,12 @@
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
-[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
+[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
 
 # 1 简介
 
-`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，使用完毕或程序异常都会关闭连接以免造成内存溢出。
+`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，默认情况下使用完毕或程序异常都会关闭Connection以免造成内存溢出。你也可以设置手动关闭Connection达到复用目的，无需传入连接实例，ThinkJD内部已做多线程安全处理。
 
-**先睹为快：**
+## 先睹为快：
 ```
 //数据库配置(只需调用一次)
 D.setDbConfig("jdbc:mysql://127.0.0.1:3306/DbName?characterEncoding=UTF-8","root","root");
@@ -38,9 +38,12 @@ user=D.M(User.class).find(id);
 D.M("user").delete(id);
 ```
 
-**项目主页** https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (Github)
+## 项目主页
+https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (Github)
 
-**测试项目** https://github.com/Leytton/ThinkJD_Demo
+
+## 测试项目
+ https://github.com/Leytton/ThinkJD_Demo
 
 # 2 使用方法
 
@@ -371,6 +374,59 @@ try {
 	}
 }
 ```
+## 0x0A 多线程安全
+【V1.4.4_12功能】
+```
+/*设置数据库操作完毕后不自动关闭
+*此处是为了提高数据库操作性能，不用频繁地获取和关闭连接，同一线程内ThinkJD会使用同一连接；
+*默认自动关闭连接的话，每次操作都会获取一个新的Connection，使用完毕立即自动关闭
+*/
+D.setAutoClose(false);
+new Thread(new Runnable() {	
+	@Override
+	public void run() {
+		Gold gold = new Gold();
+		gold.setUser_id(1L);
+		gold.setGold(5);
+		gold.setGold_type(0);
+		try {
+			D.M(gold).add();
+			D.M(gold).add();
+		} catch (SQLException e) {
+			D.closeConn();
+			e.printStackTrace();
+		}
+	}
+}, "Thread_1").start();
+
+new Thread(new Runnable() {
+	
+	@Override
+	public void run() {
+		Gold gold = new Gold();
+		gold.setUser_id(2L);
+		gold.setGold(5);
+		gold.setGold_type(0);
+		try {
+			D.M(gold).add();
+			D.M(gold).add();
+		} catch (SQLException e) {
+			D.closeConn();
+			e.printStackTrace();
+		}
+	}
+}, "Thread_2").start();
+```
+获取数据库连接处输出日志为：
+
+```
+Thread:Thread_1,conn==null:true
+Thread:Thread_2,conn==null:true
+Thread:Thread_2,conn==null:false
+Thread:Thread_1,conn==null:false
+
+```
+由此可见，线程1第一次操作数据库时conn为空，会获取一个新的conn，下次操作时conn不为空可以直接使用，直到调用`D.closeConn();`后conn才会关闭。线程2也是如此。
 
 # 3 许可证
 
