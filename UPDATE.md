@@ -1,16 +1,24 @@
-# V1.4.2_10������־
-1��beanģʽ��ָ�������ֶ�
-2���û�����>ע��>Dȫ������
+# V1.4.4_12更新日志
+支持Connection的复用，可手动关闭并且确保多线程安全
 
-# V1.4.1_8������־
- 1������class��bean�Զ���ȡ�������ֶΡ����ݺ����ơ��������Ƿ�����ע�⹦��
+# V1.4.4_11更新日志
+1、转化为UTF-8编码
+2、转化为maven项目并提交到中央仓库
+3、重写find与select查询内部方法,使其支持基于DBUtil查询的字段注解
+
+# V1.4.2_10更新日志
+1、bean模式可指定更新字段
+2、用户配置>注解>D全局设置
+
+# V1.4.1_8更新日志
+ 1、增加class或bean自动获取表名、字段、数据和名称、主键、是否自增注解功能
  
- 2��������������������ͨ��table��pk��autoInc������̬���ã������������ȼ�>ע������
+ 2、表名、主键和自增可通过table、pk、autoInc函数动态设置，函数设置优先级>注解配置
  
- 3������setInc��setDec�����������ݿ��ֶ��������Լ�
+ 3、增加setInc、setDec函数用于数据库字段自增或自减
  
- 4������asc��desc������
+ 4、增加asc、desc排序函数
  
- 5������fetchSql=true����ģʽ�����ռλ��������
+ 5、添加fetchSql=true调试模式中输出占位参数功能
  
- 6�����field()����Ϊfield()��data()��ǰ�߲���Ϊ","ƴ�ӵ��ֶ����ַ��������߲���Ϊ����
+ 6、拆分field()函数为field()和data()，前者参数为","拼接的字段名字符串，后者参数为数据

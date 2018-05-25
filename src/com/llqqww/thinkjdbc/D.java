@@ -21,6 +21,15 @@ public class D {
 	private static boolean isAutoClose=true;
 	private static boolean checkField=true;
 	
+	private static final ThreadLocal<Connection> threadConn = new ThreadLocal<Connection>(){
+		//ThreadLocal没有被当前线程赋值时或当前线程刚调用remove方法后调用get方法，返回此方法值
+        @Override
+        protected Connection initialValue()
+        {
+            return null;
+        }
+    };
+	
 	static{
 		File cfgFile=new File("thinkjdbc.properties");
 		if(cfgFile.exists()) {
@@ -58,8 +67,11 @@ public class D {
 	}
 	
 	public static Connection getConnection() throws SQLException {
-		Connection conn=null;
-		if(null!=dataSource) {
+		Connection conn=threadConn.get();
+//		System.out.println("Thread:"+Thread.currentThread().getName()+",conn==null:"+(conn==null));
+		if(null!=conn) {
+			return conn;
+		}else if(null!=dataSource) {
 			conn = dataSource.getConnection();
 		}else {
 			if(null!=dbConfig) {
@@ -68,6 +80,7 @@ public class D {
 				throw new SQLException("DbConfig/DataSource haven't set , D.setDbConfig()/D.setDataSource() should be called first !");
 			}
 		}
+		threadConn.set(conn);
 		return conn;
 	}
 	
@@ -129,12 +142,29 @@ public class D {
 	
 	/**
 	 * 关闭连接,有事务不关闭
+	 * @throws SQLException
+	 */
+	public static void closeConn(){
+		Connection conn=threadConn.get();
+		try {
+			if(conn!=null && !conn.isClosed()) {
+				conn.close();
+				threadConn.remove();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 关闭连接,有事务不关闭
 	 * @param conn
 	 * @throws SQLException
 	 */
-	public static void closeConn(Connection conn) throws SQLException{
+	protected static void closeConn(Connection conn) throws SQLException{
 		if(conn!=null && !conn.isClosed()) {
 			conn.close();
+			threadConn.remove();
 		}
 	}
 	

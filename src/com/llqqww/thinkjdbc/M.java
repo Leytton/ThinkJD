@@ -319,7 +319,7 @@ public class M {
 				return id;
 			}
 		} catch (SQLException e) {
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 			throw e;
 		}
 		return 0;
@@ -341,7 +341,7 @@ public class M {
 				return num;
 			}
 		} catch (SQLException e) {
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 			throw e;
 		}
 		return 0;
@@ -390,7 +390,7 @@ public class M {
 				return 0;
 			}
 		}catch (SQLException e) {
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 			throw e;
 		}
 	}
@@ -410,7 +410,7 @@ public class M {
 			}
 			D.autoCloseConn(conn);
 		} catch (SQLException e) {
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 			throw e;
 		}
 	}
@@ -432,14 +432,14 @@ public class M {
 				}
 			}
 		} catch (SQLException e) {
-			D.closeConn(conn);
+			D.autoCloseConn(conn);
 			throw e;
 		}
 		return null;
 	}
 	
 	/**
-	 * 开启事务,返回conn,后续操作M("table").conn(conn)传入此conn事务才有效
+	 * 开启事务,返回conn
 	 * @return Connection 返回事务连接
 	 * @throws SQLException if has error
 	 */
@@ -621,7 +621,6 @@ public class M {
 	private boolean doFetchSql() throws SQLException {
 		sql = sql.replaceAll(" +", " ").trim().toLowerCase();
 		if (fetchSql) {
-			D.autoCloseConn(conn);
 			String params="Params[";
 			if(null!=param_data && (sql.contains("insert") || sql.contains("update")) ) {
 				for (Object object : param_data) {
