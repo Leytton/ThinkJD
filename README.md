@@ -6,7 +6,7 @@
 
 # 1 简介
 
-`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，使用完毕或程序异常都会关闭连接以免造成内存溢出。
+`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，默认使用完毕或程序异常都会关闭连接以免造成内存溢出。也可以设置手动关闭以复用Connection连接，无需传入连接实例参数，ThinkJD内部已做多线程安全处理，详见[【0x0A 多线程安全】](#connection_safe)。
 
 ## 先睹为快：
 ```
@@ -379,6 +379,8 @@ try {
 	}
 }
 ```
+<span id="connection_safe"></span>
+
 ## 0x0A 多线程安全
 【V1.4.4_12功能】
 ```
