@@ -1,10 +1,12 @@
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
-[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
+[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![Maven](https://img.shields.io/badge/Maven-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://mvnrepository.com/artifact/com.llqqww/thinkjdbc/1.4.4_12) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
+
+
 
 # 1 简介
 
-`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，默认情况下使用完毕或程序异常都会关闭Connection以免造成内存溢出。你也可以设置手动关闭Connection达到复用目的，无需传入连接实例，ThinkJD内部已做多线程安全处理。
+`ThinkJD`，又名`ThinkJDBC`，一个简洁而强大的开源JDBC操作库。你可以使用Java像`ThinkPHP`框架的M方法一样，`一行代码搞定数据库操作`。ThinkJD会自动管理数据库连接，使用完毕或程序异常都会关闭连接以免造成内存溢出。
 
 ## 先睹为快：
 ```
@@ -183,7 +185,7 @@ num= (long) D.M(User.class).where("id>13441").sum("age");
 ```
 
 > 通过调用`fetchSql(true)`方法，可以获取到 `ThinkJD`产生的SQL语句(Exception形式)并且不会执行数据库操作。
-![fetchSql](https://img-blog.csdn.net/2018042023324417)
+![fetchSql](https://gitee.com/uploads/images/2018/0527/094732_5750afaf_890966.png)
 
 user表结构：
 
@@ -198,7 +200,10 @@ user表结构：
 
 `select()`和 `find()`查询结果封装到JavaBean里返回，JavaBean可使用注解映射数据库字段。
 
-> `注意:墙裂建议JavaBean字段基础数据类型使用【Integer、Long、Boolean、Float、Double、Byte、Short、Char】不要使用【integer、long、boolean、float、double、byte、short、char】，因为前者可以赋值为null而后者不行(null时为0)，所以获取到的值是不准确的。ThinkJD的save更新等操作通过判断属性值不为null则加入数据库更新字段队列。ThinkJD会自动检测以上不符合的数据类型并发出警告。如需关闭调用D.setCheckField(false);`
+> `注意:墙裂建议JavaBean字段基础数据类型使用【Integer、Long、Boolean、Float、Double、Byte、Short、Char】
+> 不要使用【integer、long、boolean、float、double、byte、short、char】，因为前者可以赋值为null而后者不行
+> (null时为0)，所以获取到的值是不准确的。ThinkJD的save更新等操作通过判断属性值不为null则加入数据库更新
+> 字段队列。ThinkJD会自动检测以上不符合的数据类型并发出警告。如需关闭调用D.setCheckField(false);`
 
 ```
 //@Table(name="user")默认类名为表名,可注解重定义
