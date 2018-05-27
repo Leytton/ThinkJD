@@ -79,7 +79,7 @@ https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (G
 <dependency>
     <groupId>com.llqqww</groupId>
     <artifactId>thinkjdbc</artifactId>
-    <version>1.4.2_10</version>
+    <version>1.4.4_12</version>
 </dependency>
 ```
 
