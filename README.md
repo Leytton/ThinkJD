@@ -453,7 +453,7 @@ Thread:Thread_1,conn==null:false
 
 # 3 许可证
 
-[Apache License 2.0](https://github.com/Leytton/ThinkJD/blob/master/LICENSE) 
+[Apache License 2.0](https://github.com/Leytton/ThinkJD/blob/master/LICENSE) 免费用于个人和商业，请放心食用:)
 
 # 4 关于
 如果喜欢的话，请点个赞让我知道哦~在找到比它用得更顺手的JDBC库之前，这个项目会持续更新。
