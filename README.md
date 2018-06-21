@@ -216,10 +216,9 @@ user表结构：
 
 `select()`和 `find()`查询结果封装到JavaBean里返回，JavaBean可使用注解映射数据库字段。
 
-> `注意:墙裂建议JavaBean字段基础数据类型使用【Integer、Long、Boolean、Float、Double、Byte、Short、Char】
-> 不要使用【integer、long、boolean、float、double、byte、short、char】，因为前者可以赋值为null而后者不行
-> (null时为0)，所以获取到的值是不准确的。ThinkJD的save更新等操作通过判断属性值不为null则加入数据库更新
-> 字段队列。ThinkJD会自动检测以上不符合的数据类型并发出警告。如需关闭调用D.setCheckField(false);`
+**注意:墙裂建议JavaBean字段基础数据类型用【Integer、Long、Boolean、Float、Double、Byte、Short、Char】
+不要使用【integer、long、boolean、float、double、byte、short、char】，因为前者可以赋值为null而后者不行(null时为0)，所以获取到的值是不准确的。ThinkJD的save更新等操作通过判断属性值不为null则加入数据库更新
+字段队列。ThinkJD会自动检测以上不符合的数据类型并发出警告。如需关闭调用D.setCheckField(false);**
 
 ```
 //@Table(name="user")默认类名为表名,可注解重定义

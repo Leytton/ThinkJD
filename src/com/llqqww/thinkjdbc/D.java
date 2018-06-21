@@ -14,7 +14,7 @@ public class D {
 	
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.4_12";
+	private static String version="V1.4.4_13";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
@@ -141,8 +141,7 @@ public class D {
 	}
 	
 	/**
-	 * 关闭连接,有事务不关闭
-	 * @throws SQLException
+	 * 关闭连接
 	 */
 	public static void closeConn(){
 		Connection conn=threadConn.get();
@@ -158,8 +157,8 @@ public class D {
 	
 	/**
 	 * 关闭连接,有事务不关闭
-	 * @param conn
-	 * @throws SQLException
+	 * @param conn 连接
+	 * @throws SQLException if has error
 	 */
 	protected static void closeConn(Connection conn) throws SQLException{
 		if(conn!=null && !conn.isClosed()) {
@@ -170,8 +169,8 @@ public class D {
 	
 	/**
 	 * 关闭连接,有事务不关闭
-	 * @param conn
-	 * @throws SQLException
+	 * @param conn 连接
+	 * @throws SQLException if has error
 	 */
 	protected static void autoCloseConn(Connection conn) throws SQLException{
 		if(D.isAutoClose() && conn.getAutoCommit()) {
@@ -181,8 +180,8 @@ public class D {
 	
 	/**
 	 * 关闭事务连接
-	 * @param conn
-	 * @throws SQLException
+	 * @param conn 连接
+	 * @throws SQLException if has error
 	 */
 	protected static void autoCloseTransConn(Connection conn) throws SQLException{
 		if(D.isAutoClose()) {

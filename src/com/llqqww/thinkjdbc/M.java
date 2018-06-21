@@ -239,7 +239,7 @@ public class M {
 	 * 查询一条数据,默认参考字段为id.可搭配page,limit,order,group,having使用
 	 * 
 	 * @param value 通过pk=value查询
-	 * @return 返回javabean
+	 * @return T 返回javabean
 	 * @throws SQLException if has error
 	 */
 	public <T> T find(Object value) throws SQLException {
@@ -252,7 +252,7 @@ public class M {
 	 * 
 	 * @param key 通过key=value查询
 	 * @param value 通过key=value查询
-	 * @return 返回javabean
+	 * @return T 返回javabean
 	 * @throws SQLException if has error
 	 */
 	public <T> T find(String key, Object value) throws SQLException {
@@ -263,7 +263,7 @@ public class M {
 	/**
 	 * 查询一条数据,可搭配page,limit,order,group,having使用
 	 * 
-	 * @return 返回javabean
+	 * @return T 返回javabean
 	 * @throws SQLException if has error
 	 */
 	@SuppressWarnings("unchecked") 
@@ -328,10 +328,12 @@ public class M {
 	public long save() throws SQLException{
 		try {
 			if(buildSql_Update()) {
-				Object[] params = new Object[param_data.length + param_where.length];
+				Object[] params = new Object[(isNeedDataParam?param_data.length:0) + param_where.length];
 				int obj_index = 0;
-				for (Object object : param_data) {
-					params[obj_index++] = object;
+				if(isNeedDataParam) {
+					for (Object object : param_data) {
+						params[obj_index++] = object;
+					}
 				}
 				for (Object object : param_where) {
 					params[obj_index++] = object;
