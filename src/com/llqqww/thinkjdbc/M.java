@@ -1,9 +1,9 @@
 package com.llqqww.thinkjdbc;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,7 +79,7 @@ public class M {
 		return this;
 	}
 	
-	public M trans(Connection conn) throws SQLException {
+	public M trans(Connection conn) throws Exception {
 		return conn(conn);
 	}
 	
@@ -123,7 +123,15 @@ public class M {
 		return this;
 	}
 	
-	public M setInc(String key,long num) throws SQLException {
+	public M setInc(String key,long num) throws Exception {
+		return this.setInc(key, new BigDecimal(num));
+	}
+	
+	public M setDec(String key,long num) throws Exception {
+		return this.setDec(key, new BigDecimal(num));
+	}
+	
+	public M setInc(String key,BigDecimal num) throws Exception {
 		this.isNeedDataParam=false;
 		if(null==this.field) {
 			this.field=key+"="+key+"+"+num;
@@ -133,7 +141,7 @@ public class M {
 		return this;
 	}
 	
-	public M setDec(String key,long num) throws SQLException {
+	public M setDec(String key,BigDecimal num) throws Exception {
 		this.isNeedDataParam=false;
 		if(null==this.field) {
 			this.field=key+"="+key+"-"+num;
@@ -214,13 +222,13 @@ public class M {
 		return this;
 	}
 	
-	public <T> List<T> select(String key, Object value) throws SQLException {
+	public <T> List<T> select(String key, Object value) throws Exception {
 		this.where(key + "=?", value);
 		return select();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> List<T> select() throws SQLException{
+	public <T> List<T> select() throws Exception{
 		try {
 			if (buildSql_Select()) {
 				BeanListHandler<T> beanListHandler= new BeanListHandler<T>((Class<T>) this.beanClass,new BasicRowProcessor(new BeanProcessor(columnToPropertyOverrides)));
@@ -228,7 +236,7 @@ public class M {
 				D.autoCloseConn(conn);
 				return beanList;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			D.closeConn(conn);
 			throw e;
 		}
@@ -240,9 +248,9 @@ public class M {
 	 * 
 	 * @param value 通过pk=value查询
 	 * @return T 返回javabean
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public <T> T find(Object value) throws SQLException {
+	public <T> T find(Object value) throws Exception {
 		this.pk=null!=this.pk?this.pk:D.getPk();
 		return find(this.pk, value);
 	}
@@ -253,9 +261,9 @@ public class M {
 	 * @param key 通过key=value查询
 	 * @param value 通过key=value查询
 	 * @return T 返回javabean
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public <T> T find(String key, Object value) throws SQLException {
+	public <T> T find(String key, Object value) throws Exception {
 		this.where(key + "=?", value);
 		return find();
 	}
@@ -264,10 +272,10 @@ public class M {
 	 * 查询一条数据,可搭配page,limit,order,group,having使用
 	 * 
 	 * @return T 返回javabean
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
 	@SuppressWarnings("unchecked") 
-	public <T> T find() throws SQLException{
+	public <T> T find() throws Exception{
 		this.limit(1);
 		try {
 			if (buildSql_Select()) {
@@ -276,38 +284,38 @@ public class M {
 				D.autoCloseConn(conn);
 				return bean;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			D.closeConn(conn);
 			throw e;
 		}
 		return null;
 	}
 
-	public long count() throws SQLException {
+	public long count() throws Exception {
 		return this.count("*");
 	}
 
-	public long count(String field) throws SQLException {
+	public long count(String field) throws Exception {
 		return (long) getTjNum("count(" + field + ") as tj_num");
 	}
 
-	public double max(String field) throws SQLException {
+	public double max(String field) throws Exception {
 		return getTjNum("max(" + field + ") as tj_num");
 	}
 
-	public double min(String field) throws SQLException {
+	public double min(String field) throws Exception {
 		return getTjNum("min(" + field + ") as tj_num");
 	}
 
-	public double avg(String field) throws SQLException {
+	public double avg(String field) throws Exception {
 		return getTjNum("avg(" + field + ") as tj_num");
 	}
 
-	public double sum(String field) throws SQLException {
+	public double sum(String field) throws Exception {
 		return getTjNum("sum(" + field + ") as tj_num");
 	}
 
-	public long add() throws SQLException{
+	public long add() throws Exception{
 		try {
 			if (buildSql_Insert()) {
 				Map<String, Object> result_insert = new QueryRunner().insert(conn, sql, new MapHandler(), param_data);
@@ -318,14 +326,14 @@ public class M {
 				D.autoCloseConn(conn);
 				return id;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			D.autoCloseConn(conn);
 			throw e;
 		}
 		return 0;
 	}
 
-	public long save() throws SQLException{
+	public long save() throws Exception{
 		try {
 			if(buildSql_Update()) {
 				Object[] params = new Object[(isNeedDataParam?param_data.length:0) + param_where.length];
@@ -342,7 +350,7 @@ public class M {
 				D.autoCloseConn(conn);
 				return num;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			D.autoCloseConn(conn);
 			throw e;
 		}
@@ -354,9 +362,9 @@ public class M {
 	 * 
 	 * @param value 根据pk=value删除
 	 * @return 返回删除数据条数
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public long delete(Object value) throws SQLException {
+	public long delete(Object value) throws Exception {
 		this.pk=null!=this.pk?this.pk:D.getPk();
 		return delete(this.pk, value);
 	}
@@ -367,9 +375,9 @@ public class M {
 	 * @param key 根据key=value删除
 	 * @param value 根据key=value删除
 	 * @return 返回删除数据条数
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public long delete(String key, Object value) throws SQLException {
+	public long delete(String key, Object value) throws Exception {
 		this.where = "where " + key + "=?";
 		Object[] params = new Object[] { value };
 		this.param_where = params;
@@ -380,9 +388,9 @@ public class M {
 	 * 删除数据,参考为where语句.可搭配page,limit,order使用
 	 * 
 	 * @return 返回删除数据条数
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public long delete() throws SQLException {
+	public long delete() throws Exception {
 		try {
 			if(buildSql_Delete()) {
 				int result_delete = new QueryRunner().update(conn, sql, param_where);
@@ -391,13 +399,13 @@ public class M {
 			}else{
 				return 0;
 			}
-		}catch (SQLException e) {
+		}catch (Exception e) {
 			D.autoCloseConn(conn);
 			throw e;
 		}
 	}
 
-	public void execute(String... sqls) throws SQLException{
+	public void execute(String... sqls) throws Exception{
 		if (sqls.length < 1) {
 			return;
 		}
@@ -411,7 +419,7 @@ public class M {
 				stmt.close();
 			}
 			D.autoCloseConn(conn);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			D.autoCloseConn(conn);
 			throw e;
 		}
@@ -421,9 +429,9 @@ public class M {
 	 * 获取某个字段值
 	 * @param field 获取field字段数据
 	 * @return 返回字段数据
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public String getField(String field) throws SQLException{
+	public String getField(String field) throws Exception{
 		this.field(field);
 		try {
 			if (buildSql_Select()) {
@@ -433,7 +441,7 @@ public class M {
 					return res.toString();
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			D.autoCloseConn(conn);
 			throw e;
 		}
@@ -443,9 +451,9 @@ public class M {
 	/**
 	 * 开启事务,返回conn
 	 * @return Connection 返回事务连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public Connection startTrans() throws SQLException{
+	public Connection startTrans() throws Exception{
 		return D.getTransConnection();
 	}
 	
@@ -453,32 +461,32 @@ public class M {
 	 * 事务提交
 	 * 中途异常关闭conn连接
 	 * @param conn 事务连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public void commit(Connection conn) throws SQLException{
+	public void commit(Connection conn) throws Exception{
 		D.commit(conn);
 	}
 	
 	/**
 	 * 事务回滚，中途异常关闭conn连接
 	 * @param conn 事务连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public void rollback(Connection conn) throws SQLException{
+	public void rollback(Connection conn) throws Exception{
 		D.rollback(conn);
 	}
 	
-	private double getTjNum(String field) throws SQLException {
+	private double getTjNum(String field) throws Exception {
 		String res = this.getField(field);
 		if (null != res) {
 			double tj_num = Double.valueOf(res);
 			return tj_num;
 		} else {
-			throw new SQLException("NULL return value of '" + field + "',check your 'where' sql");
+			throw new Exception("NULL return value of '" + field + "',check your 'where' sql");
 		}
 	}
 	
-	private boolean buildSql_Select() throws SQLException {
+	private boolean buildSql_Select() throws Exception {
 		if(null!=fieldInfoMap) {
 			//where语句只提取字段信息
 			if(null==this.field) {//没指定field
@@ -503,10 +511,10 @@ public class M {
 			this.field = "*";
 		}
 		if (this.table.equals("")) {
-			throw new SQLException("Undefined table");
+			throw new Exception("Undefined table");
 		}
 		if (!this.having.equals("") && this.group.equals("")) {
-			throw new SQLException("Undefined 'group' before using 'having'");
+			throw new Exception("Undefined 'group' before using 'having'");
 		}
 		sql = "select " + this.field + " from " + this.table + " " + this.join + " " + this.where + " " + this.group
 				+ " " + this.having + " " + this.order + " " + this.limit;
@@ -516,7 +524,7 @@ public class M {
 		return doFetchSql();
 	}
 
-	private boolean buildSql_Delete() throws SQLException {
+	private boolean buildSql_Delete() throws Exception {
 		if(null!=fieldInfoMap) {
 			//没指定where则提取主键和值构造where语句
 			if(null==this.where) {
@@ -528,16 +536,16 @@ public class M {
 		}
 		initSql();
 		if (this.table.equals("")) {
-			throw new SQLException("Undefined table");
+			throw new Exception("Undefined table");
 		}
 		if (this.where.equals("")) {
-			throw new SQLException("Undefined where sql");
+			throw new Exception("Undefined where sql");
 		}
 		sql = "delete from " + this.table + " " + this.where + " " + this.order + " " + this.limit;
 		return doFetchSql();
 	}
 
-	private boolean buildSql_Insert() throws SQLException {
+	private boolean buildSql_Insert() throws Exception {
 		if(null!=fieldInfoMap) {
 			//insert语句提取字段和数据,以及判断主键是否自增
 			
@@ -556,14 +564,14 @@ public class M {
 		}
 		initSql();
 		if (this.table.equals("")) {
-			throw new SQLException("Undefined table");
+			throw new Exception("Undefined table");
 		}
 		this.field = this.field.replaceAll(" ", "");
 		if (!this.field.equals("")) {
 			this.field = "(" + this.field + ")";
 		}
 		if (null == param_data || param_data.length < 1) {
-			throw new SQLException("Undefined data to insert");
+			throw new Exception("Undefined data to insert");
 		}
 		String value = "values(";
 		for (int value_index = 0; value_index < param_data.length - 1; value_index++) {
@@ -574,7 +582,7 @@ public class M {
 		return doFetchSql();
 	}
 
-	private boolean buildSql_Update() throws SQLException {
+	private boolean buildSql_Update() throws Exception {
 		if(null!=fieldInfoMap) {
 			//update语句提取字段和数据,以及判断主键是否自增
 			//包含主键且自增
@@ -596,13 +604,13 @@ public class M {
 		}
 		initSql();
 		if (this.table.equals("")) {
-			throw new SQLException("Undefined table");
+			throw new Exception("Undefined table");
 		}
 		if (this.where.equals("")) {
-			throw new SQLException("Undefined where sql or key field");
+			throw new Exception("Undefined where sql or key field");
 		}
 		if (this.field.equals("")) {
-			throw new SQLException("Undefined fields to update");
+			throw new Exception("Undefined fields to update");
 		}
 		String[] fileds = field.split(",");
 		String setSql = "";
@@ -614,13 +622,13 @@ public class M {
 		setSql += fileds[filed_index] + (fileds[filed_index].contains("=")?"":"=?");
 		
 		if (isNeedDataParam && (null == param_data || param_data.length < 1)) {
-			throw new SQLException("Undefined data to update");
+			throw new Exception("Undefined data to update");
 		}
 		this.sql = "update " + this.table + " set " + setSql + " " + this.where + " " + this.order + " " + this.limit;
 		return doFetchSql();
 	}
 
-	private boolean doFetchSql() throws SQLException {
+	private boolean doFetchSql() throws Exception {
 		sql = sql.replaceAll(" +", " ").trim().toLowerCase();
 		if (fetchSql) {
 			String params="Params[";
@@ -658,16 +666,17 @@ public class M {
 			try {
 				throw new Exception("\r\n" + msg);
 			} catch (Exception e) {
-				e.printStackTrace();
+//				e.printStackTrace();
+				throw e;
 			}
-			return false;
+//			return false;
 		} else {
 			initDB();
 			return true;
 		}
 	}
 
-	private void initDB() throws SQLException {
+	private void initDB() throws Exception {
 		if(null==this.conn) {
 			this.conn = D.getConnection();
 		}

@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -14,7 +13,7 @@ public class D {
 	
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.4_13";
+	private static String version="V1.4.5_14";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
@@ -50,23 +49,23 @@ public class D {
 		
 	}
 	
-	public static M M() throws SQLException {
+	public static M M() throws Exception {
 		return new M();
 	}
 
-	public static M M(String table) throws SQLException {
+	public static M M(String table) throws Exception {
 		return new M(table);
 	}
 	
-	public static M M(Object bean) throws SQLException {
+	public static M M(Object bean) throws Exception {
 		return new M(bean);
 	}
 	
-	public static M M(Class<?> beanClass) throws SQLException {
+	public static M M(Class<?> beanClass) throws Exception {
 		return new M(beanClass);
 	}
 	
-	public static Connection getConnection() throws SQLException {
+	public static Connection getConnection() throws Exception {
 		Connection conn=threadConn.get();
 //		System.out.println("Thread:"+Thread.currentThread().getName()+",conn==null:"+(conn==null));
 		if(null!=conn) {
@@ -77,7 +76,7 @@ public class D {
 			if(null!=dbConfig) {
 				conn = DriverManager.getConnection(dbConfig.getDbUrl(), dbConfig.getDbUser(), dbConfig.getDbPassword());
 			}else {
-				throw new SQLException("DbConfig/DataSource haven't set , D.setDbConfig()/D.setDataSource() should be called first !");
+				throw new Exception("DbConfig/DataSource haven't set , D.setDbConfig()/D.setDataSource() should be called first !");
 			}
 		}
 		threadConn.set(conn);
@@ -87,14 +86,14 @@ public class D {
 	/**
 	 * 获取事务连接
 	 * @return Connection 返回事务连接
-	 * @throws SQLException 获取失败或设置为事务失败时关闭连接并抛异常
+	 * @throws Exception 获取失败或设置为事务失败时关闭连接并抛异常
 	 */
-	public static Connection getTransConnection() throws SQLException{
+	public static Connection getTransConnection() throws Exception{
 		Connection conn=null;
 		try {
 			conn= getConnection();
 			conn.setAutoCommit(false);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			closeConn(conn);
 			throw e;
 		}
@@ -105,13 +104,13 @@ public class D {
 	 * 事务提交
 	 * 中途异常关闭conn连接
 	 * @param conn 事务连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public static void commit(Connection conn) throws SQLException{
-		SQLException ex = null;
+	public static void commit(Connection conn) throws Exception{
+		Exception ex = null;
 		try {
 			conn.commit();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			ex=e;
 		}finally {
 			autoCloseTransConn(conn);
@@ -124,13 +123,13 @@ public class D {
 	/**
 	 * 事务回滚，中途异常关闭conn连接
 	 * @param conn 事务连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	public static void rollback(Connection conn) throws SQLException{
-		SQLException ex = null;
+	public static void rollback(Connection conn) throws Exception{
+		Exception ex = null;
 		try {
 			conn.rollback();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			ex=e;
 		}finally {
 			autoCloseTransConn(conn);
@@ -150,7 +149,7 @@ public class D {
 				conn.close();
 				threadConn.remove();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -158,9 +157,9 @@ public class D {
 	/**
 	 * 关闭连接,有事务不关闭
 	 * @param conn 连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	protected static void closeConn(Connection conn) throws SQLException{
+	protected static void closeConn(Connection conn) throws Exception{
 		if(conn!=null && !conn.isClosed()) {
 			conn.close();
 			threadConn.remove();
@@ -170,10 +169,10 @@ public class D {
 	/**
 	 * 关闭连接,有事务不关闭
 	 * @param conn 连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	protected static void autoCloseConn(Connection conn) throws SQLException{
-		if(D.isAutoClose() && conn.getAutoCommit()) {
+	protected static void autoCloseConn(Connection conn) throws Exception{
+		if(D.isAutoClose() && null!=conn && conn.getAutoCommit()) {
 			D.closeConn(conn);
 		}
 	}
@@ -181,9 +180,9 @@ public class D {
 	/**
 	 * 关闭事务连接
 	 * @param conn 连接
-	 * @throws SQLException if has error
+	 * @throws Exception if has error
 	 */
-	protected static void autoCloseTransConn(Connection conn) throws SQLException{
+	protected static void autoCloseTransConn(Connection conn) throws Exception{
 		if(D.isAutoClose()) {
 			D.closeConn(conn);
 		}
