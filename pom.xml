@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.llqqww</groupId>
   <artifactId>thinkjdbc</artifactId>
-  <version>1.4.4_13</version>
+  <version>1.4.5_15</version>
   <packaging>jar</packaging>
 	<name>ThinkJDBC</name>
 	<url>https://github.com/Leytton/ThinkJD</url>
