@@ -60,7 +60,7 @@ D.M("user").delete(id);
 ## 0x01 Add the Dependencies
 ### Jar library
 
-[ThinkJDBC-x.x.x-full.jar](https://github.com/Leytton/ThinkJD/releases) contains the ThinkJDBC-x.x.x-core.jar core library and the  following dependencies,adding it to the build path will be all right.
+Add the ThinkJDBC-x.x.x-core.jar core library and the  following two dependencies:
 
  - mysql-connector-java-5.1.39.jar
  - commons-dbutils-1.6.jar

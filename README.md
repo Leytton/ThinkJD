@@ -1,3 +1,4 @@
+
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
 [![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.5__15-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.4__12-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![Maven](https://img.shields.io/badge/Maven-V1.4.4__13-green.svg?longCache=true&style=flat-square)](https://mvnrepository.com/artifact/com.llqqww/thinkjdbc/1.4.4_13) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
@@ -67,8 +68,7 @@ https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (G
 
 ## 0x01 添加依赖
 ### 导入Jar包
-[ThinkJDBC-x.x.x-full.jar](https://github.com/Leytton/ThinkJD/releases) 包含了ThinkJDBC-x.x.x-core.jar核心库和两个依赖库，只需要添加这一个jar包就行了
-
+引入ThinkJDBC-x.x.x-core.jar核心库和以下两个依赖库：
  - mysql-connector-java-5.1.39.jar
  - commons-dbutils-1.6.jar
  
