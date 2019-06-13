@@ -1,10 +1,15 @@
 package com.llqqww.thinkjdbc;
 
 public class DbConfig {
+	
+	public static final String DriverName_MYSQL="com.mysql.jdbc.Driver";
+	public static final String DriverName_SQLSEVER="com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	public static final String DriverName_ORACLE="oracle.jdbc.OracleDriver";
+	
 	private String DbUrl = "";
 	private String DbUser = "";
 	private String DbPassword="";
-	private String DriverName = "com.mysql.jdbc.Driver";
+	private String DriverName = DriverName_MYSQL;
 	
 	public DbConfig(String dbUrl, String dbUser, String dbPassword) {
 		DbUrl = dbUrl;

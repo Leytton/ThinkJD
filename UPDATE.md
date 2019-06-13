@@ -1,3 +1,10 @@
+# V1.4.5_16更新日志
+清除MySQL的jar包，添加Oracle驱动名
+
+# V1.4.5_15更新日志
+1、添加setInc(String,BigDecimal)和setDec(String,BigDecimal)方法用于小数自增减
+2、fetchSql调试模式直接抛异常不继续向下执行
+
 # V1.4.4_13更新日志
 修复某个bug
 

@@ -13,7 +13,7 @@ public class D {
 	
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.5_15";
+	private static String version="V1.4.5_16";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
@@ -38,7 +38,8 @@ public class D {
 				String DbUrl = cfg.getProperty("jdbcUrl");
 				String DbUser = cfg.getProperty("dataSource.user");
 				String DbPassword = cfg.getProperty("dataSource.password");
-				setDbConfig(DbUrl, DbUser, DbPassword);
+				String DriverName = cfg.getProperty("dataSource.driverClassName");
+				setDbConfig(DbUrl, DbUser, DbPassword,DriverName);
 				//System.out.println("File Config");
 			} catch (IOException |ClassNotFoundException e) {
 				e.printStackTrace();
@@ -190,6 +191,10 @@ public class D {
 	
 	public static void setDbConfig(String DbUrl,String DbUser,String DbPassword) throws ClassNotFoundException{
 		setDbConfig(new DbConfig(DbUrl,DbUser,DbPassword));
+	}
+	
+	public static void setDbConfig(String DbUrl,String DbUser,String DbPassword,String DriverName) throws ClassNotFoundException{
+		setDbConfig(new DbConfig(DbUrl,DbUser,DbPassword,DriverName));
 	}
 	
 	public static void setDbConfig(DbConfig dbConfig) throws ClassNotFoundException{

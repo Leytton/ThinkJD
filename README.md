@@ -1,8 +1,8 @@
 
+
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
-[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.5__15-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.4__15-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![Maven](https://img.shields.io/badge/Maven-V1.4.4__15-green.svg?longCache=true&style=flat-square)](https://mvnrepository.com/artifact/com.llqqww/thinkjdbc) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
-
+[![最新版本](https://img.shields.io/badge/%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC-V1.4.5__16-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.4__16-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-yellowgreen.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![Maven](https://img.shields.io/badge/Maven-V1.4.4__15-green.svg?longCache=true&style=flat-square)](https://mvnrepository.com/artifact/com.llqqww/thinkjdbc) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
 
 
 # 1 简介
@@ -26,7 +26,7 @@
 
 
 ## 先睹为快：
-```
+```java
 //数据库配置(只需调用一次)
 D.setDbConfig("jdbc:mysql://127.0.0.1:3306/DbName?characterEncoding=UTF-8","root","root");
 
@@ -68,20 +68,20 @@ https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (G
 
 ## 0x01 添加依赖
 ### 导入Jar包
-引入ThinkJDBC-x.x.x-core.jar核心库和以下两个依赖库：
- - mysql-connector-java-5.1.39.jar
- - commons-dbutils-1.6.jar
+
+引入ThinkJDBC-x.x.x-core.jar核心库和commons-dbutils-1.6.jar依赖库：
  
 或者
 
 ### Maven
-```
+```xml
 <dependency>
     <groupId>com.llqqww</groupId>
     <artifactId>thinkjdbc</artifactId>
-    <version>1.4.4_13</version>
+    <version>1.4.5_15</version>
 </dependency>
 ```
+ > 此外记得添加你要操作的数据库依赖库，如`mysql-connector-java`、`ojdbc`、`sqljdbc`等
  
 ## 0x02 定义数据库
 ThinkJD支持直接定义用户名密码访问数据库，也支持使用Hikari、C3P0等数据库连接池。
@@ -94,20 +94,25 @@ ThinkJD支持直接定义用户名密码访问数据库，也支持使用Hikari�
 程序第一次启动时会自动加载读取配置文件，如果文件不存在则忽略。【V1.2.4_5 增加功能】
 
 `thinkjdbc.properties`
-```
+```java
 jdbcUrl = jdbc:mysql://127.0.0.1:3306/thinkjdbc?useUnicode=true&characterEncoding=UTF-8
 dataSource.user = root
 dataSource.password = root
+dataSource.driverClassName=com.mysql.jdbc.Driver
 ```
 
 ### (2)帐号密码方式
-```
+```java
 D.setDbConfig("jdbc:mysql://127.0.0.1:3306/database?useUnicode=true&characterEncoding=UTF-8","root","root");
+```
+默认驱动名是 com.mysql.jdbc.Driver，即默认操作MySQL数据库，若使用的是其他数据库则可以修改驱动路径
+```java
+D.setDbConfig(new DbConfig(dbUrl, dbUser, dbPassword, driverName));
 ```
 
 ### (3)使用数据库连接池
 例如使用Hikari连接池： 
-```
+```java
 HikariConfig config = new HikariConfig("/hikari.properties");
 HikariDataSource dataSource = new HikariDataSource(config);
 D.setDataSource(dataSource);
@@ -117,7 +122,7 @@ D.setDataSource(dataSource);
 
 ### (3)配置表前缀
 只需调用一次，配置表前缀不是必需的
-```
+```java
 D.setTablePrefix("jd_");
 //D.M('user') D.M(User.class)将会操作 `jd_user` 表
 ```
@@ -157,7 +162,7 @@ D.setTablePrefix("jd_");
 |avg|double avg(String field)
 |sum|double sum(String field)
 
-```
+```java
 //find查询
 //select id,name from jd_user where id>4 order by id asc limit 0,1
 User res = D.M(User.class).field("id,name").where("id>?",4).order("id asc").find();
@@ -219,7 +224,7 @@ user表结构：
 不要使用【integer、long、boolean、float、double、byte、short、char】，因为前者可以赋值为null而后者不行(null时为0)，所以获取到的值是不准确的。ThinkJD的save更新等操作通过判断属性值不为null则加入数据库更新
 字段队列。ThinkJD会自动检测以上不符合的数据类型并发出警告。如需关闭调用D.setCheckField(false);**
 
-```
+```java
 //@Table(name="user")默认类名为表名,可注解重定义
 public class User {
 	//@Column(isKey=true)默认id为主键、isAutoInc=true自增,可注解重定义
@@ -286,7 +291,7 @@ public class User {
 | -------- | -------- | --------
 |add|long add()|Table模式前提方法:data()<br>返回自动生成的主键值;
 
-```
+```java
 /*指定插入字段*/
 long id=D.M(User.class).field("name,weight").data("Tom",60).add();
 
@@ -319,7 +324,7 @@ num=D.M(user).autoInc(false).add();
 | -------- | -------- | -------- 
 |save|long save()|Table模式前提方法:data(),where();<br>返回执行生效行数
 
-```
+```java
 long num=D.M("user").field("name,weight").data("Mike",100).where("id=?",1234).save();
 User user = new User();
 user.setId(5);
@@ -343,7 +348,7 @@ id=D.M(user).autoInc(false).fetchSql(true).where("id=?",user.getId()-1).save();
 
 `注：为防止误删除，where条件不能为空。`
 
-```
+```java
 long num=D.M("user").delete(5);//默认为id=?
 num=D.M("user").delete("time",1523681398);//time=?
 num=D.M(User.class).where("id>=?",13421).delete();
@@ -360,7 +365,7 @@ long num=D.M(user).delete();
 | -------- | -------- | -------- 
 |execute|void execute(String... sqls)|直接执行SQL语句
 
-```
+```java
 D.M().execute( sql1 [ sql2 , sql3 ... ] );
 ```
 
@@ -368,7 +373,7 @@ D.M().execute( sql1 [ sql2 , sql3 ... ] );
 数据库表引擎应该为InnoDB以支持事务操作。
 `代码示例：`
 
-```
+```java
 Connection conn=null;
 try {
 	//获取已开启事务的数据库连接
@@ -397,7 +402,7 @@ try {
 
 ## 0x0A 多线程安全
 【V1.4.4_12功能】
-```
+```java
 /*设置数据库操作完毕后不自动关闭
 *此处是为了提高数据库操作性能，不用频繁地获取和关闭连接，同一线程内ThinkJD会使用同一连接；
 *默认自动关闭连接的话，每次操作都会获取一个新的Connection，使用完毕立即自动关闭
@@ -440,7 +445,7 @@ new Thread(new Runnable() {
 ```
 获取数据库连接处输出日志为：
 
-```
+```java
 Thread:Thread_1,conn==null:true
 Thread:Thread_2,conn==null:true
 Thread:Thread_2,conn==null:false
