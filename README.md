@@ -11,7 +11,7 @@
 
 ## 特性
 
-- 核心jar包只有30多KB
+- 核心jar包只有19KB
 - 支持复杂SQL语句以及直接执行SQL语句
 - 自动管理数据库连接
 - 支持增删改查ORM映射
@@ -78,7 +78,7 @@ https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (G
 <dependency>
     <groupId>com.llqqww</groupId>
     <artifactId>thinkjdbc</artifactId>
-    <version>1.4.5_15</version>
+    <version>1.4.5_16</version>
 </dependency>
 ```
  > 此外记得添加你要操作的数据库依赖库，如`mysql-connector-java`、`ojdbc`、`sqljdbc`等

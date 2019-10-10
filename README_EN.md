@@ -1,6 +1,6 @@
 ![ThinkJDBC](https://gitee.com/uploads/images/2018/0428/174620_372c5f0f_890966.png)
 
-[![Latest Version](https://img.shields.io/badge/Latest%20Version-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
+[![Latest Version](https://img.shields.io/badge/Latest%20Version-V1.4.2__16-green.svg?longCache=true&style=flat-square)](https://gitee.com/Leytton/ThinkJD) [![中文文档](https://img.shields.io/badge/%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3-V1.4.2__16-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021702) [![English Document](https://img.shields.io/badge/English%20Document-V1.4.2__10-green.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton/article/details/80021029) [![CSDN Blog](https://img.shields.io/badge/CSDN%20Bolg-Leytton-red.svg?longCache=true&style=flat-square)](https://blog.csdn.net/Leytton)
 
 
 # 1 Introduction
@@ -71,10 +71,10 @@ or maybe you prefer to work with maven.
 <dependency>
     <groupId>com.llqqww</groupId>
     <artifactId>thinkjdbc</artifactId>
-    <version>1.4.2_10</version>
+    <version>1.4.2_16</version>
 </dependency>
 ```
-
+ > remember to add the dependency of database what you are using,such as `mysql-connector-java`,`ojdbc`,`sqljdbc`,etc.
  
 ## 0x02 Config the Database
 There are three ways to connect database by using ThinkJD.You can config username and password (file way or code way) or using the JDBC DataSources/Resource Pools  such as Hikari,C3P0,etc.
