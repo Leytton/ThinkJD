@@ -67,7 +67,7 @@ https://gitee.com/Leytton/ThinkJD (码云) https://github.com/Leytton/ThinkJD (G
 ## 0x01 添加依赖
 ### 导入Jar包
 
-引入ThinkJDBC-x.x.x-core.jar核心库和commons-dbutils-1.6.jar依赖库：
+引入ThinkJDBC-x.x.x.jar库和commons-dbutils-1.6.jar依赖库：
  
 或者
 

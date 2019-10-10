@@ -61,7 +61,7 @@ D.M("user").delete(id);
 ## 0x01 Add the Dependencies
 ### Jar library
 
-Add the ThinkJDBC-x.x.x-core.jar core library and the  following dependency:
+Add the ThinkJDBC-x.x.x.jar core library and the  following dependency:
 
  - commons-dbutils-1.6.jar
 
