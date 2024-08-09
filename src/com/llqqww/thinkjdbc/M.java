@@ -411,6 +411,7 @@ public class M {
 		}
 		PreparedStatement stmt = null;
 		try {
+			this.initDB();
 			for (String sql : sqls) {
 				stmt = conn.prepareStatement(sql);
 				stmt.execute();

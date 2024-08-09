@@ -3,6 +3,7 @@ package com.llqqww.thinkjdbc;
 public class DbConfig {
 	
 	public static final String DriverName_MYSQL="com.mysql.jdbc.Driver";
+	public static final String DriverName_MYSQL8="com.mysql.cj.jdbc.Driver";
 	public static final String DriverName_SQLSEVER="com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	public static final String DriverName_ORACLE="oracle.jdbc.OracleDriver";
 	

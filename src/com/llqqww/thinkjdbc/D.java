@@ -13,7 +13,7 @@ public class D {
 	
 	private static DbConfig dbConfig;
 	private static DataSource dataSource;
-	private static String version="V1.4.5_16";
+	private static String version="V1.4.6_17";
 	private static String TablePrefix="";
 	private static String pk="id";
 	private static boolean isPkAutoInc=true;
